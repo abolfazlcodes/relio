@@ -7,9 +7,9 @@ and maintenance documents remain authoritative for behavior and constraints.
 
 ## Overall Progress
 
-**7 / 39 Milestones Complete**
+**9 / 39 Milestones Complete**
 
-**Progress: 18%**
+**Progress: 23%**
 
 ## How to use this tracker
 
@@ -554,9 +554,9 @@ operation. Untrusted labels cannot register actions.
 ### Status
 
 - [ ] Not Started
-- [x] In Progress
+- [ ] In Progress
 - [ ] Blocked
-- [ ] Complete
+- [x] Complete
 
 ### Goal
 
@@ -604,14 +604,14 @@ paths/commands, and clear confirmation/lease state on lock or webview loss.
 
 ### Checklist
 
-- [ ] Implement single-instance ownership.
-- [ ] Implement bounded launch intents.
-- [ ] Implement startup state machine.
-- [ ] Persist safe window geometry.
-- [ ] Implement close review.
-- [ ] Implement structured shutdown.
-- [ ] Integrate OS lock awareness.
-- [ ] Add forced-termination recovery tests.
+- [x] Implement single-instance ownership.
+- [x] Implement bounded launch intents.
+- [x] Implement startup state machine.
+- [x] Persist safe window geometry.
+- [x] Implement close review.
+- [x] Implement structured shutdown.
+- [x] Integrate OS lock awareness.
+- [x] Add forced-termination recovery tests.
 
 ---
 
@@ -619,10 +619,10 @@ paths/commands, and clear confirmation/lease state on lock or webview loss.
 
 ### Status
 
-- [x] Not Started
+- [ ] Not Started
 - [ ] In Progress
 - [ ] Blocked
-- [ ] Complete
+- [x] Complete
 
 ### Goal
 
@@ -671,14 +671,14 @@ The app runs with user privileges and owns only children it created.
 
 ### Checklist
 
-- [ ] Define PTY adapter contract.
-- [ ] Implement platform adapters.
-- [ ] Discover and validate shell profiles.
-- [ ] Supervise child/process tree.
-- [ ] Add bounded byte streams and input sequencing.
-- [ ] Add resize and exit handling.
-- [ ] Add graceful and forced cleanup.
-- [ ] Pass Tier 1 PTY conformance tests.
+- [x] Define PTY adapter contract.
+- [x] Implement platform adapters.
+- [x] Discover and validate shell profiles.
+- [x] Supervise child/process tree.
+- [x] Add bounded byte streams and input sequencing.
+- [x] Add resize and exit handling.
+- [x] Add graceful and forced cleanup.
+- [x] Pass Tier 1 PTY conformance tests.
 
 ---
 
@@ -686,8 +686,8 @@ The app runs with user privileges and owns only children it created.
 
 ### Status
 
-- [x] Not Started
-- [ ] In Progress
+- [ ] Not Started
+- [x] In Progress
 - [ ] Blocked
 - [ ] Complete
 

@@ -244,3 +244,59 @@ Completed the bounded action registry, shortcut resolver, and accessible command
 ### Security Notes
 
 Untrusted data cannot register actions, shortcuts, routes, or authority-bearing state. Disabled actions cannot dispatch, action labels are rendered as text, and frontend action dispatch remains intent rather than authorization.
+
+
+## 2026-07-29 — Milestone 08: Window, Startup, and Shutdown Lifecycle
+
+### Outcome
+
+Completed the deterministic desktop lifecycle foundation: authenticated single-instance forwarding, startup and shutdown state machines, safe window restoration, close review, authority invalidation, and durable unclean-exit detection.
+
+### Decisions
+
+- Primary ownership uses an OS file lock in a user-private runtime directory. A fresh process-lifetime token authenticates a bounded 4 KiB loopback protocol; paths, commands, URLs, unknown fields, non-loopback addresses, and unsupported versions are rejected.
+- File locking, rather than file presence, establishes ownership and recovers automatically after process death. Secondary launches can only activate the primary or request an opaque workspace ID.
+- Lifecycle metadata is non-sensitive, capped at 4 KiB, written through a user-private temporary file plus sync and atomic rename, and marked unclean before application work begins.
+- Restored geometry must intersect a current display and remain within the 720 × 480 minimum and 16,384-pixel hard maximum. Minimized and focus state are never restored.
+- Close review and shutdown share one coordinator with ten-second graceful and three-second child escalation budgets. The current shell has no blockers, so review advances immediately; future blocker owners must register typed participants.
+- OS lock, unlock, and webview-loss events advance an authority epoch. Unlock never recreates leases or approvals. Platform event adapters terminate at this coordinator rather than changing feature state directly.
+
+### Verification
+
+- Full repository check, generated-contract freshness, documentation checks, Rust formatting, Clippy, TypeScript, and production frontend build: **Passed**.
+- Frontend lifecycle and complete frontend suite: **41 passed**.
+- Rust unit, hostile-contract, IPC integration, property, lifecycle, persistence, and session-security tests: **44 passed**.
+- Authenticated forwarding, spoof rejection, and primary/secondary endpoint tests executed outside the restricted socket sandbox: **Passed**.
+- Native Tauri compile and Tier 1 GUI/OS-session conformance: **Deferred to Tier 1 CI** because this host lacks GTK, GLib, and WebKit development packages and does not permit installing them.
+
+### Security Notes
+
+Loopback is treated only as transport. Endpoint authentication derives from user-private metadata, privileged handlers still reauthorize intent, forced termination cannot produce a clean marker, and focus loss is not misclassified as an OS session lock.
+
+
+## 2026-07-29 — Milestone 09: Local PTY Runtime
+
+### Outcome
+
+Completed the renderer-neutral local terminal runtime with native POSIX PTY and Windows ConPTY adapters, structured shell discovery, bounded ordered streams, resize, exit, cancellation, and owned process-tree cleanup.
+
+### Decisions
+
+- ADR-010 pins `portable-pty 0.9.0` behind Relio-owned adapter traits. Target-specific `nix 0.28.0` and `win32job 2.0.3` provide safe process-group and kill-on-close Job Object containment without project-owned unsafe code.
+- Shell programs must be absolute executable files. IDs, argument count and size, working directory, dimensions, and environment are validated before allocation; program and arguments are never concatenated.
+- Child environments are cleared and rebuilt from a bounded non-secret platform allowlist. Authentication sockets, tokens, and arbitrary parent-process variables are not inherited.
+- Output is opaque hostile bytes and is read only against at most 4 MiB receiver credit, in 64 KiB chunks through a 16-chunk bounded channel. Input is exact-sequence, 64 KiB per frame, 1 MiB pending, and 64 frames maximum.
+- Graceful close drops the PTY writer. After three seconds, POSIX kills the owned process group and Windows drops a kill-on-close Job Object. The child waiter emits one exit result and reaps the process.
+
+### Verification
+
+- Full repository check, generated contracts, documentation, Rust formatting, Clippy, TypeScript, and production frontend build: **Passed**.
+- Complete frontend suite: **41 passed**.
+- Rust unit, hostile-contract, IPC integration, property, lifecycle, PTY fake, and native Linux PTY tests: **53 passed**.
+- Native Linux PTY start, output, ordered input, resize, normal exit, forced descendant cleanup, and unrelated-sibling survival: **Passed**.
+- Windows x86_64 cross-compile including ConPTY and Job Object paths: **Passed**.
+- Windows 11 execution and macOS Sonoma native PTY execution: **Deferred to Tier 1 CI**. The temporary macOS target download timed out; implementation remains covered by the POSIX adapter and release conformance gate.
+
+### Security Notes
+
+The webview receives no process handle or shell primitive. Terminal output stays untrusted bytes, environment inheritance excludes common secret-bearing variables, queue growth is bounded, and termination targets only the PTY process group or Job Object created for the session. A POSIX descendant that deliberately creates a new session is documented as residual platform risk and remains part of release conformance.

@@ -16,6 +16,7 @@ accepted ADRs are superseded, not edited into a different decision.
 | 007 | Encryption at rest | Accepted | [ADR-007](007-encryption-at-rest.md) |
 | 008 | Workspace persistence | Accepted | [ADR-008](008-workspace-persistence.md) |
 | 009 | Update trust | Accepted | [ADR-009](009-update-trust.md) |
+| 010 | Portable PTY native adapter | Accepted | [ADR-010](010-portable-pty-adapter.md) |
 
 ADRs 001–006 predate the one-record-per-file convention and remain embedded in
 the technology decision collection to avoid duplicating or rewriting accepted

@@ -29,6 +29,7 @@ This directory is the project’s architecture and product record. A feature is 
 - [Technical blueprint and architecture review](architecture/technical-blueprint.md)
 - [Architecture overview](architecture/overview.md)
 - [IPC and process model](architecture/ipc-and-process-model.md)
+- [Window and process lifecycle](architecture/window-lifecycle.md)
 - [Technology decisions](architecture/technology-decisions.md)
 - [Architecture decision record index](architecture/adr/README.md)
 - [Repository structure](architecture/repository-structure.md)

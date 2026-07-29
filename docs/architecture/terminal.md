@@ -90,6 +90,18 @@ Recordings use encrypted immutable segments. Recording, indexing, and rendering
 are separate bounded consumers so a slow indexer cannot block terminal input or
 cause unbounded memory growth.
 
+## Local PTY runtime
+
+The v1 native adapter is `portable-pty 0.9.0` behind Relio-owned ports. It selects ConPTY on Windows and POSIX PTYs on macOS and Linux; dependency types never cross into application or IPC contracts. Shell programs are absolute executable paths with structured argument vectors. Relio clears the inherited environment and restores only a bounded non-secret allowlist plus `TERM`, `COLORTERM`, and an opaque session ID. It never builds a user command string.
+
+The runtime owns one writer pump, reader pump, and waiter per session. Input frames are at most 64 KiB, ordered by an exact monotonic sequence, limited to 1 MiB pending and 64 queued frames. Output is read only against receiver-granted credit: a session may have at most 4 MiB credit, emits at most 64 KiB per chunk, and has a 16-chunk bounded delivery channel. Backpressure therefore reaches the PTY instead of growing application memory. PTY bytes remain opaque and potentially hostile.
+
+Closing first drops the PTY writer and waits up to three seconds. Forced cleanup kills the PTY process group with `SIGKILL` on POSIX. Windows assigns the ConPTY child to a kill-on-close Job Object through the safe `win32job` adapter. The waiter records one terminal exit fact and reaps the child. Runtime drop invokes the same cleanup path. Children that deliberately escape a POSIX session remain an operating-system limitation and are covered by release conformance and residual-risk documentation.
+
+Shell discovery uses the current absolute executable shell and known platform locations, deduplicates candidates, and validates executability. An explicit override must be absolute, executable, bounded, NUL-free, and use no more than 16 structured arguments; a working directory must already be an absolute directory. Unsupported or invalid profiles fail before PTY allocation.
+
+Named v1 limits are enforced in `pty.rs`; changing them requires capacity, latency, shutdown, and security evidence. Native conformance covers start, output, ordered input, resize, normal exit, pressure, forced process-group cleanup, and sibling survival on every Tier 1 target.
+
 ## Shell integration
 
 Shell integration is an optional enhancement using a small, reviewable script or supported escape-sequence protocol. It should never be required for basic terminal operation and must have a clear install/remove path.
