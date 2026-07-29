@@ -8,6 +8,20 @@ This directory is the project’s architecture and product record. A feature is 
 - [Feature map](product/feature-map.md)
 - [Competitor analysis](product/competitor-analysis.md)
 
+## Product design
+
+- [Complete UX design specification](design/README.md)
+- [Product design philosophy](design/product-design-philosophy.md)
+- [User personas](design/personas.md)
+- [Information architecture](design/information-architecture.md)
+- [Core user flows](design/core-user-flows.md)
+- [Application layout](design/application-layout.md)
+- [Design system](design/design-system.md)
+- [Theme system UX](design/theme-system-ux.md)
+- [Keyboard-first experience](design/keyboard-first-experience.md)
+- [Security UX](design/security-ux.md)
+- [Low-fidelity wireframes](design/wireframes.md)
+
 ## Architecture
 
 - [Technical blueprint and architecture review](architecture/technical-blueprint.md)
