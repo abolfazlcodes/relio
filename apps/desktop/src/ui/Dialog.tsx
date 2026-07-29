@@ -32,7 +32,8 @@ export function Dialog({
       else dialog.setAttribute("open", "");
       titleRef.current?.focus();
     } else if (!open && dialog.open) {
-      dialog.close();
+      if (typeof dialog.close === "function") dialog.close();
+      else dialog.removeAttribute("open");
     }
   }, [open]);
 

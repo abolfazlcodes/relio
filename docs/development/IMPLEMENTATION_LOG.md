@@ -181,3 +181,66 @@ Relio feature surfaces.
 Theme data cannot supply trusted safety tokens or approval state. Remote and
 imported strings are rendered as text, and confirmation decisions return the
 original core-issued challenge rather than constructing authority in the view.
+
+
+## 2026-07-29 — Milestone 06: Workbench Navigation and Application Layout
+
+### Outcome
+
+Completed the responsive, keyboard-navigable application workbench and replaced
+the bootstrap preview with the first useful local-only application shell.
+
+### Decisions
+
+- The route model contains only the four finalized v1 top-level destinations:
+  Workspaces, Hosts, Library, and Settings. Contextual tools remain sidebar items.
+- Route transitions intentionally focus the active-view heading; selecting the
+  already-active destination preserves the user current focus.
+- The activity rail, target/environment top context, and status bar remain stable
+  anchors. Sidebar and inspector become explicit Escape-closeable overlays at
+  narrow breakpoints.
+- Placeholder surfaces state `Preview only` and describe ownership without
+  claiming persistence, connection, or infrastructure capabilities.
+- Empty, loading, error, and unavailable states share text and non-color symbols.
+
+### Verification
+
+- Route, keyboard, focus restoration, secondary-region, and state tests: **8 passed**.
+- Complete frontend test suite: **28 passed**.
+- Strict TypeScript, repository checks, Rust checks, and production build: **Passed**.
+- Headless 720 × 480 render smoke: **Passed**.
+- Tier 1 native screenshot baselines: **Deferred to native visual CI**.
+
+### Security Notes
+
+Navigation labels and routes are static bundled data. Remote, terminal, imported,
+and plugin content has no route-registration path and cannot create trusted status
+or infrastructure capability claims.
+
+
+## 2026-07-29 — Milestone 07: Action Registry and Command Palette
+
+### Outcome
+
+Completed the bounded action registry, shortcut resolver, and accessible command palette, and routed every existing workbench mutation through that shared action model.
+
+### Decisions
+
+- The v1 registry accepts static bundled definitions only; there is no runtime registration surface for plugins or remote content.
+- Action availability is evaluated against explicit context and returns a user-facing disabled reason. Privileged operations will still be reauthorized by Rust when their owning milestones arrive.
+- Registry size, query length, result count, and recent-action memory are bounded. Recent actions remain telemetry-free and process-local.
+- Shortcuts are explicit, scoped, conflict-checked, and cannot synthesize terminal input.
+- The palette uses native modal semantics, deterministic keyboard navigation, focus restoration, and inert text rendering for action labels.
+
+### Verification
+
+- Action registry, availability, bounds, performance, shortcut conflict, and hostile-label tests: **8 passed**.
+- Workbench routing, keyboard, focus, responsive-region, and palette integration tests: **9 passed**.
+- Complete frontend test suite: **37 passed**.
+- One-thousand-action bounded search performance budget: **Passed**.
+- Generated-contract freshness, documentation checks, Rust formatting, Clippy, Rust tests, strict TypeScript, and production frontend build: **Passed**.
+- Native Tauri packaging remains **Deferred to Tier 1 CI** because GTK/WebKit development libraries are unavailable in the current environment.
+
+### Security Notes
+
+Untrusted data cannot register actions, shortcuts, routes, or authority-bearing state. Disabled actions cannot dispatch, action labels are rendered as text, and frontend action dispatch remains intent rather than authorization.

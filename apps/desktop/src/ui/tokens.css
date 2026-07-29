@@ -73,7 +73,7 @@
   :root { --color-border: var(--color-text-primary); --color-border-strong: var(--color-text-primary); }
 }
 
- (forced-colors: active) {
+@media (forced-colors: active) {
   :root {
     --color-canvas: Canvas;
     --color-surface: Canvas;

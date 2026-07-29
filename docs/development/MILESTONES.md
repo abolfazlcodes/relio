@@ -7,9 +7,9 @@ and maintenance documents remain authoritative for behavior and constraints.
 
 ## Overall Progress
 
-**5 / 39 Milestones Complete**
+**7 / 39 Milestones Complete**
 
-**Progress: 13%**
+**Progress: 18%**
 
 ## How to use this tracker
 
@@ -421,10 +421,10 @@ untrusted content or future theme data.
 
 ### Status
 
-- [x] Not Started
+- [ ] Not Started
 - [ ] In Progress
 - [ ] Blocked
-- [ ] Complete
+- [x] Complete
 
 ### Goal
 
@@ -472,14 +472,14 @@ labels, or trusted status.
 
 ### Checklist
 
-- [ ] Implement route model.
-- [ ] Implement activity rail.
-- [ ] Implement contextual sidebar.
-- [ ] Implement editor and tab region.
-- [ ] Implement bottom panel and status bar.
-- [ ] Implement inspector behavior.
-- [ ] Add empty/loading/error/unavailable states.
-- [ ] Verify keyboard and narrow-window navigation.
+- [x] Implement route model.
+- [x] Implement activity rail.
+- [x] Implement contextual sidebar.
+- [x] Implement editor and tab region.
+- [x] Implement bottom panel and status bar.
+- [x] Implement inspector behavior.
+- [x] Add empty/loading/error/unavailable states.
+- [x] Verify keyboard and narrow-window navigation.
 
 ---
 
@@ -487,10 +487,10 @@ labels, or trusted status.
 
 ### Status
 
-- [x] Not Started
+- [ ] Not Started
 - [ ] In Progress
 - [ ] Blocked
-- [ ] Complete
+- [x] Complete
 
 ### Goal
 
@@ -539,13 +539,13 @@ operation. Untrusted labels cannot register actions.
 
 ### Checklist
 
-- [ ] Define action contract.
-- [ ] Add context and availability evaluation.
-- [ ] Implement command palette.
-- [ ] Implement shortcut resolver.
-- [ ] Connect menus and controls to actions.
-- [ ] Add disabled-reason UI.
-- [ ] Verify bounded search and keyboard behavior.
+- [x] Define action contract.
+- [x] Add context and availability evaluation.
+- [x] Implement command palette.
+- [x] Implement shortcut resolver.
+- [x] Connect menus and controls to actions.
+- [x] Add disabled-reason UI.
+- [x] Verify bounded search and keyboard behavior.
 
 ---
 
@@ -553,8 +553,8 @@ operation. Untrusted labels cannot register actions.
 
 ### Status
 
-- [x] Not Started
-- [ ] In Progress
+- [ ] Not Started
+- [x] In Progress
 - [ ] Blocked
 - [ ] Complete
 

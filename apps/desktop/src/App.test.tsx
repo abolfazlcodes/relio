@@ -6,10 +6,11 @@ import { FatalBootstrap } from "./FatalBootstrap";
 import { isSupportedPlatform, UnsupportedPlatform } from "./UnsupportedPlatform";
 
 describe("secure application shell", () => {
-  it("renders a local-only empty state", () => {
+  it("renders the local-only workbench", () => {
     render(<App />);
-    expect(screen.getByRole("heading", { name: "The secure application shell is ready." })).toBeInTheDocument();
-    expect(screen.getByText("Local mode")).toBeInTheDocument();
+    expect(screen.getByRole("navigation", { name: "Primary" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Overview" })).toBeInTheDocument();
+    expect(screen.getByText("No profile open")).toBeInTheDocument();
   });
   it("renders a safe fatal state", () => {
     render(<FatalBootstrap />);

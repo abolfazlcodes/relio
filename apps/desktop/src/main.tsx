@@ -5,6 +5,8 @@ import { BootstrapBoundary } from "./BootstrapBoundary";
 import { isSupportedPlatform, UnsupportedPlatform } from "./UnsupportedPlatform";
 import "./ui/tokens.css";
 import "./ui/components.css";
+import "./actions/actions.css";
+import "./workbench/workbench.css";
 import "./styles.css";
 
 const element = document.getElementById("root");
