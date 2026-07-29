@@ -1,0 +1,27 @@
+{
+  "name": "relio",
+  "version": "0.0.0",
+  "private": true,
+  "description": "A local-first developer operations workspace.",
+  "license": "MIT",
+  "packageManager": "pnpm@11.15.1",
+  "engines": {
+    "node": ">=24.18.0 <25",
+    "pnpm": "11.15.1"
+  },
+  "scripts": {
+    "build": "pnpm run check",
+    "check": "pnpm run contracts:check && pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test",
+    "contracts:check": "node tools/contracts.mjs",
+    "contracts:generate": "node tools/contracts.mjs --write",
+    "docs:check": "node tools/check-docs.mjs",
+    "format": "node tools/check-docs.mjs --fix && cargo fmt --all",
+    "format:check": "node tools/check-docs.mjs && cargo fmt --all --check",
+    "lint": "node --check tools/check-docs.mjs && node --check tools/contracts.mjs && pnpm run docs:check && pnpm --filter './apps/*' lint && cargo clippy --workspace --lib --tests",
+    "test": "pnpm --filter './apps/*' test && cargo test --workspace --lib --tests",
+    "typecheck": "node --check tools/check-docs.mjs && pnpm --filter './apps/*' typecheck"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "catalog:"
+  }
+}

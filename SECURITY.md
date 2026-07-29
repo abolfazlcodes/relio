@@ -2,11 +2,13 @@
 
 Security issues must not be reported in public issues or discussions.
 
-Relio has no supported public release yet. A named private reporting address is
-a release blocker. Until it is published, do not place sensitive details in a
-public issue; contact the repository owner privately through the hosting
-platform if that option is available. If no private channel exists, retain the
-report until the project publishes one. A report should include:
+Relio has no supported public release yet. Report vulnerabilities privately to
+`security.invalid`.
+
+TODO: Replace `security.invalid` with a monitored production security
+address before the first public release. The placeholder domain is intentionally
+non-deliverable; until replacement, retain sensitive details rather than opening
+a public issue. A report should include:
 
 - affected version or commit;
 - operating system and environment;

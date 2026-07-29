@@ -7,9 +7,9 @@ and maintenance documents remain authoritative for behavior and constraints.
 
 ## Overall Progress
 
-**0 / 39 Milestones Complete**
+**4 / 39 Milestones Complete**
 
-**Progress: 0%**
+**Progress: 10%**
 
 ## How to use this tracker
 
@@ -82,10 +82,10 @@ and maintenance documents remain authoritative for behavior and constraints.
 
 ### Status
 
-- [x] Not Started
+- [ ] Not Started
 - [ ] In Progress
 - [ ] Blocked
-- [ ] Complete
+- [x] Complete
 
 ### Goal
 
@@ -133,14 +133,14 @@ assignment follows least privilege and separation of duties.
 
 ### Checklist
 
-- [ ] Select and add the project license.
-- [ ] Publish attribution and third-party notice policy.
-- [ ] Create the review-enforced ownership map.
-- [ ] Assign security and incident ownership.
-- [ ] Record provisional Tier 1 machines and maintainers.
-- [ ] Confirm dependency and ADR approval workflow.
-- [ ] Update security and contribution entry points.
-- [ ] Record verification evidence.
+- [x] Select and add the project license.
+- [x] Publish attribution and third-party notice policy.
+- [x] Create the review-enforced ownership map.
+- [x] Assign security and incident ownership.
+- [x] Record provisional Tier 1 machines and maintainers.
+- [x] Confirm dependency and ADR approval workflow.
+- [x] Update security and contribution entry points.
+- [x] Record verification evidence.
 
 ---
 
@@ -148,10 +148,10 @@ assignment follows least privilege and separation of duties.
 
 ### Status
 
-- [x] Not Started
+- [ ] Not Started
 - [ ] In Progress
 - [ ] Blocked
-- [ ] Complete
+- [x] Complete
 
 ### Goal
 
@@ -200,16 +200,16 @@ actions. Pin third-party actions to reviewed commit hashes.
 
 ### Checklist
 
-- [ ] Create Cargo workspace.
-- [ ] Create pnpm workspace.
-- [ ] Pin supported toolchains and package manager.
-- [ ] Add reviewed lockfiles.
-- [ ] Add formatting, linting, and strict type checks.
-- [ ] Add unit-test and contract-generation commands.
-- [ ] Add dependency, license, and secret scans.
-- [ ] Add least-privilege CI.
-- [ ] Document clean-checkout setup.
-- [ ] Verify all Tier 1 bootstrap jobs.
+- [x] Create Cargo workspace.
+- [x] Create pnpm workspace.
+- [x] Pin supported toolchains and package manager.
+- [x] Add reviewed lockfiles.
+- [x] Add formatting, linting, and strict type checks.
+- [x] Add unit-test and contract-generation commands.
+- [x] Add dependency, license, and secret scans.
+- [x] Add least-privilege CI.
+- [x] Document clean-checkout setup.
+- [x] Verify all Tier 1 bootstrap jobs.
 
 ---
 
@@ -217,10 +217,10 @@ actions. Pin third-party actions to reviewed commit hashes.
 
 ### Status
 
-- [x] Not Started
+- [ ] Not Started
 - [ ] In Progress
 - [ ] Blocked
-- [ ] Complete
+- [x] Complete
 
 ### Goal
 
@@ -269,14 +269,14 @@ scope without a reviewed requirement.
 
 ### Checklist
 
-- [ ] Create Tauri composition root.
-- [ ] Create React application root.
-- [ ] Bundle all required assets.
-- [ ] Configure restrictive CSP.
-- [ ] Declare explicit window capabilities.
-- [ ] Add bootstrap and fatal-error UI.
-- [ ] Add packaged launch smoke test.
-- [ ] Verify zero startup network activity.
+- [x] Create Tauri composition root.
+- [x] Create React application root.
+- [x] Bundle all required assets.
+- [x] Configure restrictive CSP.
+- [x] Declare explicit window capabilities.
+- [x] Add bootstrap and fatal-error UI.
+- [x] Add packaged launch smoke test.
+- [x] Verify zero startup network activity.
 
 ---
 
@@ -284,10 +284,10 @@ scope without a reviewed requirement.
 
 ### Status
 
-- [x] Not Started
+- [ ] Not Started
 - [ ] In Progress
 - [ ] Blocked
-- [ ] Complete
+- [x] Complete
 
 ### Goal
 
@@ -338,15 +338,15 @@ capabilities, confirmation nonces, and diagnostic redaction in the core.
 
 ### Checklist
 
-- [ ] Define versioned common envelopes.
-- [ ] Generate TypeScript bindings from Rust.
-- [ ] Add typed frontend client.
-- [ ] Add stable error codes and safe messages.
-- [ ] Add operation registry and cancellation.
-- [ ] Add idempotency handling.
-- [ ] Add ordered event subscriptions and gap recovery.
-- [ ] Add bounded stream-broker contract.
-- [ ] Pass malformed and hostile-input tests.
+- [x] Define versioned common envelopes.
+- [x] Generate TypeScript bindings from Rust.
+- [x] Add typed frontend client.
+- [x] Add stable error codes and safe messages.
+- [x] Add operation registry and cancellation.
+- [x] Add idempotency handling.
+- [x] Add ordered event subscriptions and gap recovery.
+- [x] Add bounded stream-broker contract.
+- [x] Pass malformed and hostile-input tests.
 
 ---
 
@@ -354,8 +354,8 @@ capabilities, confirmation nonces, and diagnostic redaction in the core.
 
 ### Status
 
-- [x] Not Started
-- [ ] In Progress
+- [ ] Not Started
+- [x] In Progress
 - [ ] Blocked
 - [ ] Complete
 

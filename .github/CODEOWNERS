@@ -1,0 +1,13 @@
+# TODO: Replace @owner with the project GitHub organization or maintainer team.
+* @owner
+
+# Security-sensitive and release surfaces require the designated owner until
+# dedicated teams exist.
+/.github/ @owner
+/docs/security/ @owner
+/docs/architecture/ @owner
+/docs/development/ @owner
+/docs/maintenance/ @owner
+/docs/operations/ @owner
+/SECURITY.md @owner
+/LICENSE @owner

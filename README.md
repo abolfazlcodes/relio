@@ -73,10 +73,11 @@ Start with the [documentation index](docs/README.md). The most important decisio
 
 Contributions are welcome once implementation begins. Please read the [developer onboarding guide](docs/development/developer-onboarding.md), [contributing guide](docs/development/contributing.md), and [coding standards](docs/development/coding-standards.md) before opening a pull request.
 
-## License
+## Governance placeholders
 
-The project license has not been selected yet. This blocks dependency
-distribution decisions and the first public source or binary release. It must
-be resolved before implementation dependencies are accepted. See the
-[technical blueprint](docs/architecture/technical-blueprint.md) and
-[release strategy](docs/operations/release-strategy.md).
+Relio is licensed under the [MIT License](LICENSE). Governance currently uses
+`` and `security.invalid` placeholders under the autonomous
+execution policy.
+
+TODO: Replace those placeholders with the real organization, maintainer teams,
+and monitored private security contact before the first public release.

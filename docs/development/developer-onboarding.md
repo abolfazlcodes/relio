@@ -36,7 +36,8 @@ When Phase 1 begins, contributors will need:
 - platform-specific build and signing tools only when packaging.
 
 Exact versions belong in reproducible toolchain and package-manager files once
-the first app scaffold exists. A contributor does not choose or upgrade the
+the first app scaffold exists. The bootstrap pins Rust 1.97.1, Node.js 24.18.0,
+pnpm 11.15.1, and Tauri CLI 2.11.4; upgrades follow the dependency policy. A contributor does not choose or upgrade the
 encrypted SQLite build, Tauri runtime or desktop modules, terminal parser,
 OpenSSH interaction layer, or cryptographic dependency casually; those are
 security-critical dependencies with review requirements.
