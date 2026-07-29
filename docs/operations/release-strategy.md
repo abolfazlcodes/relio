@@ -17,7 +17,10 @@ Every distributable build should record:
 - Rust, frontend, and toolchain versions;
 - dependency lockfile state;
 - build configuration;
-- checksums and signature metadata.
+- checksums and signature metadata;
+- SBOM and provenance identity;
+- encrypted-data, workspace-export, and theme-schema compatibility;
+- update channel, platform, architecture, and package type.
 
 Builds should be reproducible enough that maintainers can investigate a published artifact. Signing keys and release credentials never live in the repository.
 
@@ -30,7 +33,15 @@ Promote a build only when:
 3. security-sensitive tests pass;
 4. known regressions are documented;
 5. release notes explain user-visible changes, risks, and rollback;
-6. the artifact is signed and its checksum is published.
+6. the artifact is signed and its checksum is published;
+7. updater metadata binds the exact artifact, target, channel, version, length,
+   digest, and expiry;
+8. performance budgets pass on the reference systems;
+9. unresolved security/privacy findings are explicitly release-blocking or have
+   a documented owner, expiry, and accepted residual risk.
+
+Tier 1 platform failure blocks promotion. Tier 2 status is published. The
+support policy is in [platform support](../architecture/platform-support.md).
 
 ## Incident response
 
@@ -41,8 +52,22 @@ If a release causes data loss, credential exposure, unsafe connection behavior, 
 - provide a safe rollback or mitigation;
 - preserve relevant diagnostics without requesting sensitive session data;
 - create a regression test;
-- document the root cause and process improvement.
+- document the root cause and process improvement;
+- assess signing/update key compromise and disable automatic promotion when
+  authenticity is uncertain.
+
+Application rollback and data rollback are separate. A previous application
+cannot write a newer incompatible database schema; restoration uses the
+explicit encrypted pre-migration backup and discloses loss of post-update
+changes.
 
 ## Open-source governance before first public release
 
-Before shipping public binaries, resolve the project license, supported platforms, maintainer ownership, security contact, signing ownership, privacy/telemetry policy, and third-party attribution process.
+Before accepting implementation dependencies or publishing source, resolve the
+project license and attribution policy. Before shipping public binaries, also
+resolve supported platforms, maintainer ownership, a private security contact,
+application/update/platform signing ownership and recovery, privacy policy, and
+third-party notices.
+
+The update trust and key lifecycle requirements are in
+[update security](../security/updates.md).

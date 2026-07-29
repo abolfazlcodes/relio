@@ -4,6 +4,10 @@
 
 SSH connections must fail closed on identity and cryptographic verification errors. Relio uses the platform’s established SSH configuration and agent behavior where possible, but the application owns the consent flow, target display, error classification, and secure defaults.
 
+The first provider is a declared, tested range of system OpenSSH versions. An
+unknown version or unavailable executable produces capability diagnosis rather
+than optimistic parsing.
+
 ## Key handling
 
 - prefer an OS keychain, hardware-backed key, or agent;
@@ -13,8 +17,11 @@ SSH connections must fail closed on identity and cryptographic verification erro
 - warn on private-key files with permissive access controls;
 - distinguish a public key, private key, certificate, and agent identity in the UI;
 - support rotation and removal without leaving stale references in workspace exports.
+- pass interactive answers only through the authenticated one-time askpass
+  channel defined in [secret management](secrets.md).
 
-See [credential security](credentials.md) for the full lifecycle and import rules.
+See [credential security](credentials.md) for the full lifecycle and key-file
+registration rules.
 
 ## Agent forwarding
 
@@ -29,32 +36,70 @@ Forwarding must not be enabled implicitly by importing an SSH config file. Prefe
 
 ## Host-key verification
 
-- use the user’s known-hosts files through a controlled adapter;
+- use a Relio-managed known-hosts store for Relio profiles and approved user
+  known-hosts files as controlled read-only sources;
 - display the algorithm, fingerprint, host, port, and verification source;
 - require explicit trust for a first-seen key;
 - block and explain changed or revoked keys;
 - do not silently delete, replace, or rewrite known-hosts entries;
 - preserve the original line and verification history where the platform permits it;
 - make hashed host entries work without exposing unrelated host data.
+- never use `ssh-keyscan` output alone as proof of identity.
 
 Fingerprint display should use a modern, unambiguous representation and offer a copy action that does not put the private key or password on the clipboard.
 
 ## Algorithms and weak-cipher prevention
 
-Relio maintains a reviewed cryptographic policy rather than accepting whatever a remote endpoint offers. Modern secure host-key algorithms, key exchange methods, ciphers, and MACs are enabled according to the underlying provider’s supported security baseline. Deprecated or weak algorithms are disabled by default.
+Relio requires a supported OpenSSH baseline and does not weaken its maintained
+defaults globally. A small app-level deny policy may block algorithms that must
+not be re-enabled even if configuration requests them. Exact names and minimum
+provider versions live in versioned security configuration and require
+compatibility tests.
 
 Legacy exceptions require an explicit per-host override, a warning, a reason, and a visible review/expiry path. They must never lower the policy globally or silently apply to other hosts. The exact allowlist belongs in versioned implementation configuration and must be updated through a security review.
 
 ## SSH configuration and proxies
 
-Imported SSH configuration is untrusted input. Relio parses it without shell evaluation, displays effective values, and warns when a `ProxyCommand`, local command, dynamic forwarding, or environment hook requires execution. User-provided commands are never concatenated with unvalidated values.
+Imported SSH configuration is untrusted input. Relio parses a documented safe
+subset without shell evaluation, limits include traversal/depth/size, displays
+effective values, and generates a protected minimal config for OpenSSH.
+
+`LocalCommand`, `PermitLocalCommand`, `Match exec`, unknown directives, and
+environment hooks are disabled in v1. `ProxyCommand` is unsupported; use
+`ProxyJump` for supported jump-host workflows. User-provided values are never
+concatenated into a shell string.
 
 Proxy and jump-host chains show every hop and identity. A failure in one hop must not cause Relio to retry a different, less secure route automatically.
 
-## SFTP and forwarding
+## SFTP, SCP, and forwarding
 
-SFTP writes require target, path, permissions, overwrite behavior, and conflict state to be visible. Port forwarding defaults to loopback and displays the local bind address, remote destination, transport host, and lifecycle. Binding beyond loopback requires explicit consent and may require re-authentication.
+SFTP and SCP operations show source, destination host, exact remote path,
+direction, overwrite behavior, and available integrity evidence. Prefer SFTP
+semantics. The legacy SCP protocol is unsupported in v1 because remote-shell
+path interpretation and wildcard behavior can make the peer influence file
+selection. If Relio cannot prove that the selected `scp` executable uses SFTP
+semantics, it does not offer that operation; the user can use the SFTP transfer
+workflow instead.
+
+Port forwarding defaults to loopback and displays the local bind address,
+remote destination, transport host, and lifecycle. Binding beyond loopback
+requires explicit consent and may require re-authentication.
+
+Control sockets and helper endpoints live in a randomized, user-only runtime
+directory. Relio stops only processes/listeners it owns and never identifies a
+process to kill solely by port number.
 
 ## Logging
 
 Connection logs may include timestamps, host aliases, ports, algorithms, fingerprints, and failure classes. They must not include passwords, private keys, session tokens, full command arguments containing secrets, or raw remote output unless the user explicitly records a session and accepts the risk.
+
+## Required negative tests
+
+- hostile host aliases, usernames, options, and local/remote paths remain
+  structured arguments;
+- legacy SCP is refused on every host;
+- wildcard, leading-dash, newline, control-character, and traversal-like names
+  cannot become command options or unexpected selections;
+- interrupted transfers leave no silently accepted partial destination;
+- overwrite, symlink, host-key, jump-host, and helper failures remain visible
+  and fail closed.

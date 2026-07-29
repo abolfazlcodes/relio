@@ -1,51 +1,110 @@
 # Supply-Chain Security
 
-Relio depends on operating-system libraries, Rust crates, JavaScript packages, build tools, plugin packages, and release infrastructure. A compromise in any of these can affect users operating production systems.
+Relio depends on operating-system libraries, Rust crates, JavaScript packages,
+build tools, and release infrastructure. A compromise in any of these can
+affect users operating production systems.
+
+The encrypted SQLite build, terminal renderer, Tauri runtime and desktop
+modules, OpenSSH compatibility layer, cryptographic provider, and
+installer/updater are security-critical dependencies with named owners.
+
+Relio v1 does not load separately distributed application code. This removes an
+entire runtime distribution and secondary signing trust path from the product.
 
 ## Dependency controls
 
 - commit and review Rust and frontend lockfiles;
 - use supported, maintained versions and remove unused dependencies;
 - audit licenses and known vulnerabilities before adoption;
-- review dependency capabilities, build scripts, native code, and transitive network behavior;
-- avoid dependencies that introduce an unnecessary runtime or privilege;
-- document exceptions and owners for accepted risk.
+- review capabilities, build scripts, native code, and transitive network
+  behavior;
+- reject dependencies that introduce an unnecessary runtime or privilege;
+- document owners and expiry for accepted risk;
+- pin Rust, Node, pnpm, build tools, lockfiles, and target triples;
+- disable unnecessary lifecycle scripts and review every dependency that runs
+  build-time code;
+- verify downloaded toolchain and build-artifact checksums or signatures.
+
+A new dependency requires evidence that an existing project-owned module or a
+smaller library cannot reasonably meet the need. Security-sensitive dependency
+selection is an architectural decision, not an incidental import.
 
 ## Automated scanning
 
-CI should run, at minimum:
+CI runs, at minimum:
 
 - Rust and frontend vulnerability audits;
 - secret scanning;
 - static analysis and linting;
 - license and attribution checks;
-- container/toolchain image scanning where used;
+- toolchain image scanning where used;
 - SBOM generation for release artifacts;
 - dependency freshness and abandoned-package reporting.
 
-Automated results require triage. A scanner warning is not automatically a vulnerability, and a clean scan is not proof of safety.
+Automated results require triage. A warning is not automatically exploitable,
+and a clean scan is not proof of safety.
+
+## CI isolation
+
+- Workflow tokens are read-only by default and jobs declare narrower
+  permissions.
+- Third-party actions are pinned to full reviewed commit SHAs.
+- Pull-request workflows receive no release, signing, publishing, or production
+  credential.
+- Workflows using untrusted fork content do not use privileged target-context
+  checkout.
+- Build/test and signing/publishing run in separate protected environments with
+  independently approved promotion.
+- Release artifacts are promoted; the same source version is not rebuilt
+  independently for each channel.
 
 ## Release integrity
 
-Stable artifacts must be:
+Stable artifacts are:
 
-- built from a protected, reviewed tag;
-- signed with protected release keys;
+- built from a protected reviewed tag;
+- signed with protected release and platform keys;
 - published with checksums, provenance, and SBOM;
 - verified by the updater before installation;
 - retained with the previous known-good version for rollback;
 - promoted through staged channels where practical.
 
-Release signing keys must not be stored in the repository or on an ordinary developer workstation. Key access, rotation, recovery, and revocation require documented ownership.
+Signing keys are never stored in the repository or on an ordinary developer
+workstation. Application/update signing and platform signing/notarization are
+separate roles. Access, rotation, recovery, revocation, and maintainer departure
+have named owners and rehearsed runbooks. See
+[update security](updates.md).
 
 ## Reproducible builds
 
-The project should pin toolchains, lock dependencies, record build inputs, avoid timestamps and uncontrolled network fetches, and publish enough metadata for independent rebuild attempts. Reproducibility is an engineering goal; any remaining non-determinism must be measured and documented.
+Pin toolchains and dependencies, record build inputs, avoid timestamps and
+uncontrolled network fetches, and publish enough metadata for independent
+rebuild attempts. Reproducibility is an engineering goal; remaining
+non-determinism is measured and documented.
 
 ## SBOM and provenance
 
-Each stable installer and plugin package should publish an SBOM in a recognized format and identify source revision, build environment, dependency lock state, and signing identity. The update service must bind metadata to the exact artifact and target platform.
+Each stable installer publishes an SBOM in a recognized format and identifies
+the source revision, build environment, dependency lock state, and signing
+identity. Update metadata binds the exact artifact, target platform, channel,
+length, and digest.
 
-## Plugin and marketplace supply chain
+Provenance is generated by the protected build environment and binds source,
+workflow identity, available dependency/toolchain evidence, target, and
+artifact digest. Self-authored metadata from an untrusted build job is not
+sufficient.
 
-Marketplace packages are not trusted solely because they are listed. Verify signatures and hashes, show publisher and permissions, preserve rollback, and allow local installation from a verified package without requiring an account. A publisher change or capability increase is a material security event.
+## Vulnerability response
+
+- Maintain an expedited patch path for Tauri/webview exposure, encrypted
+  database, cryptographic provider, terminal parser, SFTP protocol parser,
+  OpenSSH interaction, and updater.
+- Record affected versions and whether exploitation crosses a Relio trust
+  boundary.
+- Rebuild from a reviewed tag; never patch a published artifact in place.
+- Publish revocation or release guidance only through authenticated project
+  channels.
+- Retain enough evidence to compare a suspect artifact with source and
+  provenance.
+- Remove obsolete dependencies promptly so unsupported code does not remain in
+  the trusted computing base.

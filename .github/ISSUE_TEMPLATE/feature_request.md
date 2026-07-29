@@ -14,11 +14,10 @@ assignees: []
 
 ## Why this belongs in the core
 
-<!-- If this could be a plugin or optional provider, explain why it needs core access. -->
+<!-- Explain how this fits the documented v1 product scope and security model. -->
 
 ## Alternatives and current workaround
 
 ## Security or privacy considerations
 
 ## Additional context
-

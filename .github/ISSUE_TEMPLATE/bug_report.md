@@ -26,11 +26,10 @@ assignees: []
 - Operating system and version:
 - Architecture:
 - Local or remote session:
-- Relevant plugin/theme:
+- Relevant theme or terminal profile:
 
 ## Diagnostics
 
 <!-- Attach sanitized logs or screenshots. Remove hosts, usernames, tokens, keys, and sensitive command output. -->
 
 ## Additional context
-

@@ -2,7 +2,10 @@
 
 ## Before opening an issue
 
-Search existing issues and documentation. For a feature idea, explain the user problem, the current workaround, why it belongs in the product, and whether it should be core or a plugin. For a bug, include a minimal reproduction and remove secrets from logs.
+Search existing issues and documentation. For a feature idea, explain the user
+problem, the current workaround, why it belongs in the focused v1 product, and
+its security and maintenance cost. For a bug, include a minimal reproduction
+and remove secrets from logs.
 
 ## Before opening a pull request
 
@@ -16,15 +19,23 @@ Search existing issues and documentation. For a feature idea, explain the user p
 
 ## Design and architecture changes
 
-Use an ADR when a change affects technology, process boundaries, data ownership, security assumptions, public APIs, plugin capabilities, or platform support. Small implementation choices can remain in the pull request description.
+Use an ADR when a change affects technology, process boundaries, data
+ownership, encryption/key formats, security assumptions, public APIs, update
+trust, performance budgets, or platform support.
+Small implementation choices can remain in the pull request description.
 
 ## Commit guidance
 
-Use concise, imperative subjects and keep unrelated changes separate. A useful commit explains one coherent change, such as `Document plugin capability boundary` or `Add host-key verification decision flow`.
+Use concise, imperative subjects and keep unrelated changes separate. A useful
+commit explains one coherent change, such as
+`Document host-key verification decision flow`.
 
 ## Review expectations
 
 Reviewers should evaluate behavior, boundaries, failure handling, security, accessibility, tests, and documentation. “Works on my machine” is not sufficient for a cross-platform desktop feature; identify platform assumptions explicitly.
+
+Security-critical dependency additions or upgrades include maintenance,
+advisory, license, build-script/native-code, platform, and rollback evidence.
 
 ## Community behavior
 

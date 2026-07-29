@@ -24,6 +24,16 @@ What else was evaluated, and why was it not selected now?
 
 What becomes easier, harder, or newly constrained?
 
+## Security, privacy, and operations
+
+How does this change trust, authority, data collection/retention, failure
+recovery, platform support, performance budgets, and supply-chain exposure?
+
+## Evidence
+
+What measurements, prototypes, compatibility checks, or authoritative sources
+support the decision? What remains an assumption?
+
 ## Migration or follow-up
 
-What future work or review date is required?
+What future work, rollback path, owner, expiry, or review date is required?

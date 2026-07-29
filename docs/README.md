@@ -10,31 +10,36 @@ This directory is the project’s architecture and product record. A feature is 
 
 ## Architecture
 
+- [Technical blueprint and architecture review](architecture/technical-blueprint.md)
 - [Architecture overview](architecture/overview.md)
+- [IPC and process model](architecture/ipc-and-process-model.md)
 - [Technology decisions](architecture/technology-decisions.md)
 - [Repository structure](architecture/repository-structure.md)
+- [Workspace architecture](architecture/workspaces.md)
+- [Persistence architecture](architecture/persistence.md)
 - [UI architecture](architecture/ui.md)
 - [State management](architecture/state-management.md)
 - [Settings system](architecture/settings-system.md)
 - [Terminal architecture](architecture/terminal.md)
 - [SSH architecture](architecture/ssh.md)
-
-## Extensibility
-
-- [Plugin system](extensibility/plugin-system.md)
-- [Theme system](extensibility/theme-system.md)
+- [Theme system](architecture/theme-system.md)
+- [Performance and capacity](architecture/performance-and-capacity.md)
+- [Platform support](architecture/platform-support.md)
 
 ## Security
 
 - [Security architecture index](security/README.md)
 - [Threat model](security/threat-model.md)
-- [Credential security](security/credentials.md)
+- [Credential storage](security/credentials.md)
+- [Secret management](security/secrets.md)
 - [SSH security](security/ssh.md)
-- [Plugin security](security/plugins.md)
-- [Local data security](security/local-data.md)
+- [Local database security](security/local-data.md)
+- [Encryption strategy](security/encryption.md)
 - [Network security](security/network.md)
+- [Update security](security/updates.md)
 - [Supply-chain security](security/supply-chain.md)
-- [Secure development and disclosure](security/secure-development.md)
+- [Secure development lifecycle and disclosure](security/secure-development.md)
+- [Privacy principles](security/privacy.md)
 
 ## Delivery and operations
 
@@ -43,6 +48,7 @@ This directory is the project’s architecture and product record. A feature is 
 - [Security considerations](operations/security.md)
 - [Release strategy](operations/release-strategy.md)
 - [Versioning strategy](operations/versioning.md)
+- [Future ideas](future-ideas.md)
 
 ## Contribution
 

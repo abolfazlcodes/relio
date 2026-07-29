@@ -1,58 +1,117 @@
 # Repository Structure
 
-The repository should grow around boundaries rather than framework conventions. This is a target shape for the first implementation phases; the directories do not need to be created until they contain work.
+## Principle
+
+Start with cohesive modules and extract packages only for a real process,
+security, reuse, public-contract, or build boundary. Creating a crate for every
+domain noun before implementation would add versioning and dependency overhead
+without improving isolation.
+
+The repository remains documentation-only until Phase 1 begins.
+
+## Initial implementation shape
 
 ```text
 .
 ├── .github/
 │   ├── ISSUE_TEMPLATE/
-│   └── pull_request_template.md
+│   └── workflows/
 ├── docs/
 │   ├── architecture/
 │   │   └── adr/
 │   ├── development/
-│   ├── extensibility/
 │   ├── operations/
-│   └── product/
+│   ├── product/
+│   └── security/
 ├── apps/
-│   ├── desktop/              # Tauri shell and frontend entrypoint
-│   └── plugin-host/          # Plugin process lifecycle and protocol
-├── crates/
-│   ├── app-core/             # Use cases, domain models, events
-│   ├── session-runtime/      # PTY/session lifecycle and stream routing
-│   ├── transports/           # Local and remote transport contracts/adapters
-│   ├── persistence/          # SQLite repositories and migrations
-│   ├── secrets/              # OS credential-store adapter
-│   └── protocol/             # Versioned IPC and plugin contracts
-├── packages/
-│   ├── ui/                   # Design system and accessible primitives
-│   ├── workbench/            # Layout, panels, command palette
-│   ├── terminal-view/        # Renderer integration and terminal UX
-│   └── sdk/                  # Plugin and theme authoring types
-├── plugins/
-│   └── built-in/             # First-party integrations using public contracts
+│   └── desktop/
+│       ├── src/                    # React/TypeScript workbench
+│       │   ├── app/
+│       │   ├── features/
+│       │   ├── platform/
+│       │   └── ui/
+│       ├── src-tauri/
+│       │   ├── capabilities/       # explicit per-window Tauri permissions
+│       │   ├── migrations/
+│       │   └── src/
+│       │       ├── application/
+│       │       ├── domain/
+│       │       ├── infrastructure/
+│       │       └── protocol/
+│       └── tests/
+├── fixtures/
+│   ├── terminal/
+│   ├── ssh/
+│   ├── ssh-config/
+│   └── security/
 ├── tests/
-│   ├── integration/
-│   ├── fixtures/
-│   └── performance/
-└── README.md
+│   ├── end-to-end/
+│   ├── performance/
+│   └── packaging/
+├── Cargo.toml
+└── package.json
 ```
+
+Backend modules are private by default. Frontend features own views and typed
+clients, not infrastructure implementations. Tests close to a module cover
+local behavior; root suites cover packaged and cross-boundary behavior.
+
+## Extraction triggers
+
+Extract a Rust crate or TypeScript package only when at least one is true:
+
+- it is a separate executable or process boundary;
+- it must prevent a dependency from entering a security-sensitive binary;
+- two independently built consumers require it;
+- it is a versioned process or data protocol;
+- build time or platform conditional compilation materially improves;
+- a focused fuzzing or `unsafe` boundary needs isolated ownership.
+
+Expected later extractions are:
+
+```text
+crates/
+├── session-runtime/          # if PTY/transport reuse or fuzzing justifies it
+├── remote-transport/         # if SSH/SFTP/SCP reuse justifies it
+└── persistence/              # if encryption/build isolation justifies it
+```
+
+These directories are created when their phase begins, not as empty
+architecture theater.
 
 ## Dependency direction
 
 ```text
-ui / workbench -> protocol client -> app-core contracts
-app-core -> protocol, persistence interfaces, transport interfaces
-infrastructure adapters -> app-core interfaces
-plugins -> sdk and versioned protocol only
+React views -> generated frontend client -> application commands
+application services -> domain models and infrastructure interfaces
+infrastructure adapters -> application-owned interfaces
 ```
 
-The frontend may depend on generated types from `protocol`, but it must not import persistence, OS, or transport implementation code. Built-in integrations should use the same public provider contracts as external integrations where practical.
+- Frontend code cannot import backend persistence, transport, or OS modules.
+- Domain modules do not depend on Tauri, React, SQLite, or OpenSSH.
+- Infrastructure adapters do not decide confirmation, authorization, retention, or
+  safety policy.
+- Core adapters use narrow application-owned interfaces where that improves
+  compatibility testing, without adding a process boundary unless isolation or
+  independent lifecycle requirements justify one.
+- Cyclic dependencies are prohibited.
 
-## Naming and ownership
+## Toolchain ownership
+
+- Pin Rust with `rust-toolchain.toml` when implementation starts.
+- Use one committed Cargo lockfile for shipped binaries.
+- Pin one JavaScript package manager in the root `packageManager` field and
+  commit its lockfile.
+- Generate frontend IPC types in reproducible checks; CI fails on stale
+  generated output.
+- Keep platform packaging configuration beside the desktop app and release
+  policy in `docs/operations`.
+
+## Naming and documentation
 
 - one module owns one domain concept or technical responsibility;
 - public interfaces use nouns for data and verbs for operations;
-- platform-specific code lives behind an adapter named for the platform or capability;
-- tests live next to the unit under test for local behavior and in `tests/` for cross-module scenarios;
-- documentation for a public module lives beside its contract or in `docs/` when it explains system behavior.
+- platform code lives behind a capability adapter named for its platform;
+- security-sensitive adapters include a local threat note and negative tests;
+- public contract changes update documentation and an ADR in the same change;
+- generated files identify their source and regeneration command.

@@ -2,78 +2,121 @@
 
 ## Scope and assumptions
 
-This model covers the Relio desktop application, its local data, installed plugins, update/package paths, network transports, and integrations with local and remote systems. It assumes the user may operate production systems and that a compromise can have business or operational impact.
+This model covers the Relio desktop application, local data, application/update
+paths, SSH/SFTP/SCP transports, port forwarding, local processes, imported
+workspaces and themes, and interactions with remote systems. Users may operate
+production systems, so compromise can have operational and business impact.
 
-The operating system, its kernel, the user’s hardware, and the cryptographic implementations supplied by the platform are trusted dependencies but not assumed to be perfect. If the device is fully compromised, Relio cannot guarantee secrecy of data while it is being used.
+The operating system, kernel, hardware, and platform cryptographic
+implementations are trusted dependencies but not assumed perfect. A fully
+compromised device can observe data while Relio uses it.
 
-## Assets we protect
+The Rust core and protected release-signing process are trusted. The webview is
+less trusted. Imported data, theme data, terminal output, remote systems,
+network paths, update transport, user-selected files, and diagnostics are
+untrusted.
+
+This model uses asset and trust-boundary analysis informed by STRIDE. Risk is
+assessed by impact, exploitability, exposure, and detectability. The table is a
+design tool, not proof of security.
+
+## Assets
 
 | Asset | Confidentiality | Integrity | Availability | Examples |
 | --- | --- | --- | --- | --- |
-| Credentials | Critical | Critical | High | passwords, private keys, tokens, certificates, agent references |
-| Host identity data | High | Critical | High | aliases, addresses, usernames, jump hosts, known-hosts records |
-| Remote operations | High | Critical | Critical | commands, uploads, tunnels, service actions |
-| Local files | High | High | High | workspace files, downloaded configs, temporary edit buffers |
-| Session content | High | High | Medium | terminal input/output, command history, recordings, logs |
-| Workspace metadata | Medium to high | High | High | projects, environments, snippets, layouts, infrastructure inventory |
-| Plugin and update artifacts | Medium | Critical | High | packages, manifests, signatures, dependency metadata |
-| Privacy and diagnostics | High | High | Medium | crash data, connection metadata, telemetry decisions |
+| Credentials | Critical | Critical | High | passwords, private keys, passphrases, certificates, agent references |
+| Host identity | High | Critical | High | addresses, usernames, jump hosts, known-host records |
+| Remote operations | High | Critical | Critical | commands, uploads, downloads, tunnels |
+| Local/remote files | High | High | High | SSH configuration, referenced key files, downloaded files, edit buffers |
+| Session content | High | High | Medium | input/output, history, recordings, logs |
+| Workspace metadata | Medium to high | High | High | hosts, snippets, layouts, settings, themes |
+| Application/update artifacts | Medium | Critical | High | installers, metadata, signatures, dependency evidence |
+| Privacy and diagnostics | High | High | Medium | crash data, connection metadata, retention choices |
 
-## Attackers considered
+## Attackers
 
-- malicious local applications attempting to read files, keychain data, IPC, or process memory;
-- compromised or malicious plugins;
+- malicious local applications attempting to read files, credential-store data,
+  IPC, clipboard, or process memory;
 - malware or ransomware on the device;
 - a thief with a stolen or unlocked device;
-- malicious insiders with access to a plugin, build pipeline, release account, or support process;
-- compromised dependencies, registries, build tools, or package maintainers;
-- supply-chain attackers tampering with source, artifacts, update metadata, or marketplace packages;
-- network attackers attempting MITM, downgrade, DNS, proxy, or tunnel abuse;
-- compromised remote hosts returning malicious output or attempting to abuse forwarding and file operations.
+- compromised remote hosts returning malicious output or abusing forwarded
+  authority and file operations;
+- network attackers attempting interception, downgrade, DNS, proxy, or tunnel
+  abuse;
+- compromised dependencies, registries, build tools, or maintainers;
+- insiders with access to build, release, signing, or support processes;
+- attackers tampering with source, artifacts, update metadata, or diagnostics.
 
 ## Trust boundaries
 
-1. React/webview to Rust core through typed IPC.
-2. Rust core to OS keychain and filesystem.
-3. Rust core to plugin host through capability-scoped IPC.
-4. Relio to local processes and shells.
-5. Relio to remote SSH, TLS, proxy, and forwarding endpoints.
-6. Release pipeline to signed installers, packages, and update metadata.
-7. Optional AI or sync providers to approved user context.
+1. React/webview to Rust core through allowlisted typed IPC.
+2. Rust core to OS credential store, protected filesystem, and database.
+3. Rust core to local shells, OpenSSH, askpass, editor, and helper processes.
+4. Relio to remote SSH/SFTP/SCP, proxy, jump-host, and forwarding endpoints.
+5. Release pipeline to signed installers and update metadata.
+6. Relio to SSH configuration, theme records, and user-selected files.
 
-## Attack scenarios and mitigations
+## Attack scenarios and controls
 
-| Scenario | Impact | Primary mitigations | Remaining risk |
+| Scenario | Impact | Primary controls | Remaining risk |
 | --- | --- | --- | --- |
-| Malicious plugin requests credentials or arbitrary command execution | Credential theft or production impact | Out-of-process runtime, explicit capabilities, no raw credential API, user-visible consent, timeouts, audit events | A user may approve an overly broad capability; process isolation is not a complete sandbox |
-| Local malware reads Relio config or SQLite files | Host and workflow disclosure | OS ACLs, no plaintext secrets, keychain references, optional encrypted sensitive records, redacted exports | Malware running as the user may still read accessible data and observe active sessions |
-| Stolen unlocked device is used to open Relio | Unauthorized operations | OS session lock awareness where available, re-authentication for credential use and sensitive actions, keychain access controls, workspace lock option | An attacker with an active OS session can use resources available to that session |
-| Host-key change is accepted for convenience | MITM and credential exposure | Strict known-host verification, fingerprint display, explicit changed-key block, no silent replacement | Users may override warnings; operational recovery must remain understandable |
-| Weak SSH algorithm is negotiated | Reduced confidentiality or downgrade | Curated algorithm policy, weak algorithms disabled by default, warning and time-limited override for legacy hosts | Legacy environments may need exceptions and become a residual risk |
-| Plugin or dependency package is replaced in transit | Code execution or data theft | Signed packages, integrity checks, pinned/locked dependencies, provenance, isolated runtime, update rollback | Signing-key compromise or a trusted publisher compromise remains possible |
-| Terminal output contains a password and is recorded | Secret disclosure | Recording opt-in, sensitive-output warnings, redaction heuristics, retention controls, encrypted storage policy | Perfect detection is impossible; users can intentionally or accidentally expose secrets |
-| Unsafe path or command composition is exploited | Local or remote unauthorized write/execute | Structured arguments, path validation, explicit target/scope confirmation, no shell concatenation | A legitimate user can still authorize a destructive action |
-| Port forwarding exposes a production service | Network exposure | Loopback default, bind-address warning, visible tunnel lifecycle, privileged-port checks, stop controls | A user can intentionally bind broadly; the UI cannot know all network consequences |
-| Compromised remote host injects UI-like instructions in output | Social engineering or unsafe action | Remote output treated as untrusted data, no automatic action parsing, explicit execution boundary | Users may follow malicious text manually |
-| Update pipeline is compromised | Broad user compromise | Signed artifacts, protected release credentials, reproducible builds, SBOM, staged rollout, rollback | A validly signed malicious release remains a high-impact failure |
+| Compromised webview invokes privileged commands | Unauthorized local or remote action | Bundled assets, restrictive content policy, explicit Tauri capabilities, narrow IPC, core policy, trusted confirmation, no frontend secrets | An authorization defect in an allowed core operation remains critical |
+| Local attacker copies the profile | Disclosure of hosts, history, settings, recordings | Encrypted SQLite/blobs/backups, random root key in OS secret store, native ACLs | An unlocked credential store or active process exposes decrypted data |
+| Stolen unlocked device opens Relio | Unauthorized remote operations | OS lock awareness, credential re-authentication, keychain access controls, visible targets | Active OS-session authority remains usable |
+| Host-key change is accepted casually | Interception and credential exposure | Strict known-host verification, fingerprint evidence, changed-key block, no silent replacement | A user can override a warning after explicit review |
+| Weak SSH algorithm is negotiated | Downgrade or reduced confidentiality | Maintained defaults, app deny policy, per-host visible legacy exception | Some old hosts may require accepted residual risk |
+| SSH configuration executes local code | Local execution or credential theft | Safe-subset parser, bounded includes, generated config, executable directives disabled | Parser defects or an incorrectly classified directive |
+| Secret leaks through helper, IPC, diagnostics, clipboard, or process metadata | Credential compromise | Purpose-bound leases, one-time protected askpass channel, no args/env/frontend secret bytes, previewed diagnostics, clipboard opt-in | Same-user malware and imperfect redaction |
+| Terminal output exploits renderer integration | UI compromise, spoofing, or unsafe action | Maintained parser, restrictive URI/clipboard policy, bounded stream, no operation authorization from output | Parser/runtime defects and social engineering |
+| Snippet or history reuse submits hidden or malformed input | Unintended command execution | Single-line/control-character validation, complete preview, target/identity display, insertion without synthetic Enter | User can still submit a harmful reviewed line |
+| Unsafe path or command composition is exploited | Unauthorized write or execution | Structured arguments, path revalidation, no shell concatenation, explicit target/scope | A legitimate user can still approve destructive work |
+| Interrupted or hostile SFTP/SCP transfer corrupts or overwrites data | Data loss or unintended write | Structured paths, conflict and overwrite review, temporary destination, verification, legacy protocol unsupported | Remote filesystem semantics may prevent atomicity |
+| Port forwarding exposes a service | Network exposure | Loopback default, broad-bind warning, visible endpoints, owned lifecycle | User can intentionally bind broadly |
+| Remote output imitates trusted UI | Social engineering | Output remains in untrusted surfaces, reserved safety UI, explicit core-owned confirmation | Users may manually follow malicious text |
+| Malformed or tampered theme state spoofs trusted UI | Social engineering | Bounded schema, data-only themes, invariant safety chrome, safe fallback | Convincing labels or colors can still mislead |
+| Terminal output containing a password is retained | Secret disclosure | Retention off by default, warnings, encryption, quotas, deletion, best-effort redaction | Perfect secret detection is impossible |
+| Update or build pipeline is compromised | Broad code execution across users | Protected build/signing, pinned dependencies, signed artifacts/metadata, provenance, SBOM, staged rollout, rollback | A validly signed malicious release remains catastrophic |
+| Old valid update is replayed or client is frozen | Known vulnerability remains installed | Expiring metadata, highest-seen sequence/version, target/channel binding, freshness failure | Compromise of the initial signing role has limited survivability |
+| Database key is lost or migration is interrupted | Permanent loss or unavailable profile | Credential-store error handling, encrypted recovery backup, transactional migration, rollback, no silent key replacement | Data is unrecoverable without a usable key/backup |
 
 ## Security objectives
 
-- secrets are not written to ordinary application data;
-- security-sensitive operations have an explicit target and consent boundary;
-- untrusted extensions and remote output cannot directly invoke privileged core behavior;
-- host identity and TLS certificates are verified rather than inferred from convenience;
-- local data is protected by platform controls and a documented encryption strategy;
-- a compromised component has the smallest practical blast radius;
-- failures are visible, diagnosable, and fail closed where possible.
+- Secret bytes never enter ordinary application data or frontend state.
+- Sensitive operations bind explicit user intent to target, identity, path,
+  port, and operation.
+- Untrusted terminal, remote, theme, and imported content cannot directly invoke
+  privileged core behavior.
+- Host identity and TLS certificates are verified rather than inferred from
+  convenience.
+- Local retained data uses platform controls and authenticated encryption.
+- Every queue, process, transfer, cache, and recording has an owner and bound.
+- Application behavior comes from the reviewed signed product, reducing
+  runtime code-loading and distribution attack surface.
+- Failures are visible, diagnosable, cancellable, and fail closed where
+  authenticity or authority is uncertain.
 
-## Residual risks accepted for the initial architecture
+## Accepted residual risks
 
-- a fully compromised OS can observe input, memory, windows, and network activity;
-- plugin process isolation is weaker than a hardened OS sandbox on some platforms;
-- terminal recordings and logs can contain secrets that automated redaction misses;
-- user-approved commands can still cause damage;
-- availability depends on local OS facilities, remote hosts, and network paths;
-- cross-platform security parity requires platform-specific testing and may not be perfect.
+- A fully compromised OS can observe input, memory, windows, clipboard, and
+  network activity.
+- Recordings and logs can contain secrets that automated redaction misses.
+- User-approved commands and file writes can still cause damage.
+- Remote filesystems may lack atomic rename or reliable metadata.
+- Availability depends on OS services, external executables, remote hosts, and
+  network paths.
+- Cross-platform security parity requires platform-specific testing and may not
+  be perfect.
 
-Residual risks must be reviewed before each stable release and documented in release notes when user action or platform configuration is required.
+Residual risks are reviewed before stable release and appear in release notes
+when user action or platform configuration is required.
+
+## Out-of-scope guarantees
+
+Relio cannot guarantee:
+
+- secrecy or integrity on a fully compromised or unlocked operating system;
+- that a remote system or user-approved command is benign;
+- physical deletion from SSDs, snapshots, backups, or remote systems;
+- availability of credential store, network, remote host, webview, or OpenSSH;
+- safety of an external executable deliberately launched by the user;
+- recovery after all root and recovery keys are lost.

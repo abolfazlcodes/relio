@@ -17,7 +17,12 @@ Application window
 └── status and operation feedback
 ```
 
-The terminal view is one editor surface. Future surfaces such as a file browser, log viewer, port-forward manager, and infrastructure overview use the same layout and operation feedback patterns.
+The terminal view is one editor surface. The remote file browser, editor, log
+viewer, and port-forward manager use the same layout and operation feedback
+patterns.
+
+The workbench renders only bundled core code. Remote pages, downloaded scripts,
+and imported styles are not workbench surfaces.
 
 ## Component rules
 
@@ -27,6 +32,11 @@ The terminal view is one editor surface. Future surfaces such as a file browser,
 - A feature view must work with keyboard navigation and screen readers before it is considered complete.
 - Modal dialogs are reserved for decisions that genuinely require interruption; use inline or panel feedback for routine status.
 - Virtualize long lists and log views; never render unbounded session output as a normal DOM tree.
+- Treat terminal text, remote filenames, Markdown, theme metadata, imported
+  text, and diagnostics as untrusted; sanitize and encode at the
+  renderer boundary.
+- Do not turn a hyperlink or URI from remote or imported content into a privileged
+  action. External navigation shows destination and requires an approved scheme.
 
 ## Interaction contracts
 
@@ -39,9 +49,27 @@ Every action that can affect an external system should make these visible where 
 - whether the action is read-only, reversible, or destructive;
 - progress, cancellation, and final result.
 
+## Trusted safety chrome
+
+Credential prompts, host-key review, update verification failures, broad port
+binds, remote overwrite confirmation, and destructive operations use core-owned
+components with a reserved visual identity.
+
+- Untrusted terminal, remote, and imported content cannot invoke these
+  components with an “approved” result.
+- Themes may adapt contrast-safe tokens but cannot hide, resize below minimum,
+  replace wording, or visually imitate the reserved trust indicator.
+- The core binds the displayed target and operation ID to the action that will
+  execute.
+- Repeated or replayed confirmation responses are rejected.
+
 ## Responsive and platform behavior
 
 The information architecture stays consistent across Windows, Linux, and macOS. Keyboard shortcuts, title-bar treatment, system menus, context menus, file pickers, and secure input may use platform-specific adapters. Platform-specific behavior must be documented and tested rather than hidden behind assumptions.
+
+The support tiers and platform adapters are defined in
+[platform support](platform-support.md). The UI exposes unavailable capabilities
+with remediation instead of rendering controls that fail generically.
 
 ## Accessibility baseline
 
@@ -56,3 +84,6 @@ The information architecture stays consistent across Windows, Linux, and macOS. 
 ## Visual quality gates
 
 Before a UI feature is merged, it should have a design note or story, loading/error/empty states, keyboard behavior, light/dark or theme-token behavior, and a screenshot or reviewable test scenario when visual regression matters.
+
+Security-sensitive surfaces also require spoofing, truncation, text-scaling,
+localization-length, and hostile-input fixtures.

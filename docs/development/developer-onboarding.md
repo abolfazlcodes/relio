@@ -6,10 +6,12 @@ Read, in order:
 
 1. [Vision](../product/vision.md)
 2. [Feature map](../product/feature-map.md)
-3. [Architecture overview](../architecture/overview.md)
-4. [Technology decisions](../architecture/technology-decisions.md)
-5. [Roadmap](../roadmap.md)
-6. [Contributing guide](contributing.md)
+3. [Technical blueprint](../architecture/technical-blueprint.md)
+4. [Architecture overview](../architecture/overview.md)
+5. [Security architecture](../security/README.md)
+6. [Technology decisions](../architecture/technology-decisions.md)
+7. [Roadmap](../roadmap.md)
+8. [Contributing guide](contributing.md)
 
 At this stage, the repository is intentionally documentation-only. Do not create application code until the relevant phase is selected and its acceptance criteria are understood.
 
@@ -21,11 +23,16 @@ When Phase 1 begins, contributors will need:
 - Rust stable toolchain and Cargo;
 - Node.js LTS and the project package manager;
 - Tauri prerequisites for the host operating system;
+- pnpm at the version pinned by the root `packageManager` field;
 - a supported browser/webview runtime supplied by the platform;
 - a local shell suitable for testing;
 - platform-specific build and signing tools only when packaging.
 
-Exact versions belong in the build documentation once the first app scaffold exists. Avoid documenting a version number before the project locks it in a reproducible toolchain file.
+Exact versions belong in reproducible toolchain and package-manager files once
+the first app scaffold exists. A contributor does not choose or upgrade the
+encrypted SQLite build, Tauri runtime or desktop modules, terminal parser,
+OpenSSH interaction layer, or cryptographic dependency casually; those are
+security-critical dependencies with review requirements.
 
 ## First contribution path
 
@@ -38,6 +45,8 @@ Good early contributions are documentation corrections, competitor evidence, des
 3. Build a small local command or repository use case before touching the terminal runtime.
 4. Study PTYs and process groups before implementing session behavior.
 5. Add integration tests with fake processes before connecting real hosts.
-6. Read the security document before handling credentials, paths, network sockets, or plugins.
+6. Read the focused security document before handling IPC exposure,
+   credentials, encryption, paths, network sockets, SSH helpers, updates, or
+   remote file operations.
 
 The goal is gradual systems exposure. A frontend contributor does not need to become a kernel or cryptography expert to make valuable changes, but should understand the boundary they are crossing.

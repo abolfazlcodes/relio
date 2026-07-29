@@ -10,15 +10,17 @@ These decisions describe the intended foundation, not a frozen dependency lockfi
 | Native core | Rust | Accepted |
 | Frontend | React + TypeScript | Accepted |
 | Frontend tooling | Vite | Accepted for initial implementation |
+| JavaScript workspace | pnpm workspace, pinned in `packageManager`, with one lockfile | Accepted |
+| Rust async runtime | Tokio through a small application-owned task boundary | Accepted direction |
 | Terminal rendering | xterm.js | Accepted |
 | Local PTY | `portable-pty`-style Rust adapter | Accepted direction |
-| SSH transport | Transport interface; OpenSSH-compatible provider first | Accepted direction |
-| Persistence | SQLite behind repository interfaces | Accepted |
+| SSH transport | Capability interface; supported OpenSSH adapter first | Accepted direction |
+| SFTP transport | Bounded SFTP protocol over a supervised OpenSSH subsystem | Accepted direction |
+| Persistence | SQLCipher-compatible SQLite behind one writer service | Accepted |
 | Secret storage | Native OS credential store | Accepted |
 | UI state | Local component state plus small event-driven client store | Accepted |
-| Plugin transport | Versioned JSON-RPC over process boundary | Accepted direction |
+| Desktop IPC | Tauri commands/events plus bounded binary streams; generated types | Accepted |
 | Theme model | Declarative design tokens and semantic roles | Accepted |
-| Sync | Optional provider, never a core dependency | Accepted principle |
 
 ## ADR-001: Tauri 2 for the desktop shell
 
@@ -28,7 +30,9 @@ These decisions describe the intended foundation, not a frozen dependency lockfi
 
 **Why:** Tauri documents a small application-specific bundle and a native-webview model, while still allowing any frontend framework and Rust-backed commands. This supports the frontend transition path without making Node.js a production runtime dependency.
 
-**Tradeoffs:** Webview behavior differs between Windows, Linux, and macOS. We must test visual and input behavior on each platform. Native plugins may still be needed for platform-specific features.
+**Tradeoffs:** Webview behavior differs between Windows, Linux, and macOS. We
+must test visual and input behavior on each platform. Trusted platform adapters
+may still be needed in the Rust core for platform-specific features.
 
 **Alternatives considered:** Electron for ecosystem maturity; fully native UI for maximum platform fidelity; a Rust-native UI toolkit for one-language simplicity. Electron was rejected for baseline resource cost and a larger trusted runtime. Fully native and Rust-native UI were rejected for the slower iteration and smaller contributor pool during the first product phase.
 
@@ -36,11 +40,13 @@ Reference: [Tauri: What is Tauri?](https://v2.tauri.app/start/)
 
 ## ADR-002: React and TypeScript for the workbench
 
-**Context:** The product is UI-heavy, requires a coherent design system, and will need contributors to build views and plugins.
+**Context:** The product is UI-heavy, requires a coherent design system, and
+will need contributors to build complex views.
 
 **Decision:** Use React and TypeScript, compiled with Vite, with a project-owned design system.
 
-**Why:** The team can iterate quickly, TypeScript makes IPC and contribution contracts explicit, and React has a broad contributor and testing ecosystem.
+**Why:** The project can iterate quickly, TypeScript makes IPC and feature
+contracts explicit, and React has a broad contributor and testing ecosystem.
 
 **Tradeoffs:** The frontend must not become a second application core. We will enforce a small IPC client surface, avoid arbitrary cross-component global state, and profile rendering with realistic terminal output.
 
@@ -62,11 +68,23 @@ Reference: [xterm.js documentation](https://xtermjs.org/docs/)
 
 **Context:** SSH interoperability includes config files, agents, keys, jump hosts, host-key verification, PTY allocation, SFTP, and forwarding. A native implementation can offer tight integration but takes substantial time to harden.
 
-**Decision:** Define a transport contract first. Start with an OpenSSH-compatible adapter where it provides the best interoperability, then evaluate a native SSH adapter after real compatibility and UX requirements are measured.
+**Decision:** Define a transport contract first. Start with a supported
+OpenSSH-compatible adapter for interactive SSH, forwarding, authentication, and
+host identity. Use a separate OpenSSH SFTP subsystem connection with a bounded
+binary protocol client for file operations; do not parse human-readable command
+output. Evaluate a native SSH adapter only after measured requirements justify
+another protocol stack.
 
-**Why:** Users already depend on their SSH configuration, agents, known-hosts files, proxy commands, and platform-specific credential helpers. Reusing established client behavior reduces surprises in the first useful release.
+**Why:** Users already depend on OpenSSH behavior, agents, known-hosts files,
+jump hosts, and platform-specific helpers. Reusing the supported executable
+reduces protocol surprises while a safe-subset parser and generated config keep
+executable directives from running implicitly.
 
-**Tradeoffs:** A subprocess adapter requires process supervision and careful stream handling. It may limit fine-grained control in some features. Native SSH can be introduced behind the same interface when the benefits justify its maintenance and security cost.
+**Tradeoffs:** Subprocess adapters require supervision and careful stream
+handling. The SFTP client adds a binary protocol parser and a second connection,
+but avoids duplicating SSH cryptography and host-key logic. Native SSH can be
+introduced behind the same interface only when its benefits justify the
+maintenance and security cost.
 
 **Alternatives considered:** A pure Rust SSH implementation from day one; libssh2 bindings; embedding a second SSH client. These remain evaluation options, not first-phase commitments.
 
@@ -74,22 +92,56 @@ Reference: [xterm.js documentation](https://xtermjs.org/docs/)
 
 **Context:** The app needs durable local data, migrations, search, relationships, and offline operation without a server.
 
-**Decision:** Use SQLite behind repositories and migration boundaries. Do not expose SQL or database schemas to the frontend or plugin API.
+**Decision:** Use a SQLCipher-compatible SQLite build behind repositories,
+migration boundaries, and one database writer service. Keep the random profile
+key in the OS secret store. Do not expose SQL or database schemas to the
+frontend.
 
 **Why:** SQLite is mature, portable, transactional, embeddable, and well-suited to a single-user desktop application. It supports workspace relationships and local search without introducing a local server.
 
-**Tradeoffs:** Concurrent writes need discipline. Large terminal recordings should use a file/blob strategy with metadata in SQLite rather than turning the database into an unbounded event log.
+**Tradeoffs:** Encryption packaging, attribution, key loss, and cross-platform
+builds become release concerns. Concurrent writes need discipline. Large
+terminal recordings use encrypted segmented files with metadata in SQLite
+rather than turning the database into an unbounded event log.
 
-## ADR-006: out-of-process plugins with capability grants
+See [ADR-007](adr/007-encryption-at-rest.md) and
+[persistence architecture](persistence.md).
 
-**Context:** Plugins are required for ecosystem growth, but arbitrary in-process code could compromise credentials, terminal sessions, stability, and updateability.
+## ADR-006: no dynamic application-code loading in v1
 
-**Decision:** Plugins communicate with a plugin host over a versioned JSON-RPC protocol and receive explicit capabilities. UI extension is declarative or rendered through constrained surfaces; arbitrary DOM access is not part of the contract.
+**Context:** Relio handles credentials and sessions that can reach production
+systems. Loading separately distributed executable or UI code at runtime would
+expand the trusted computing base, dependency graph, release paths, and
+authorization model before the core product has proved its own boundaries.
 
-**Why:** A process boundary limits crashes and makes permissions visible. JSON-RPC keeps the initial SDK language-neutral. A future WebAssembly runtime may be added for more constrained plugins, but it is not a prerequisite for the first SDK.
+**Decision:** All v1 application behavior is compiled, reviewed, signed, and
+released with Relio. User customization is data-only: settings, snippets,
+keybindings, layouts, and bounded theme tokens. The application does not load
+arbitrary scripts, native libraries, remote pages, or executable modules.
 
-**Tradeoffs:** Process startup and IPC add complexity. We will support lazy activation, timeouts, quotas, and clear lifecycle diagnostics.
+**Why:** A smaller trusted codebase is easier to audit, test, package, and
+support. One signed distribution path also makes incident response and
+provenance materially clearer.
+
+**Tradeoffs:** New capabilities require a core change and a Relio release.
+External tools can still be launched deliberately by the user, but they receive
+no hidden in-process authority or privileged API.
+
+**Alternatives considered:** In-process dynamic modules, unrestricted scripts,
+and isolated out-of-process runtimes. Each adds substantial security and
+lifecycle machinery without helping the focused v1 workflow.
+
+## Additional accepted decisions
+
+- [ADR-008: workspace persistence model](adr/008-workspace-persistence.md)
+- [ADR-009: update trust model](adr/009-update-trust.md)
 
 ## Decision maintenance
 
 When a decision changes, record context, alternatives, evidence, migration impact, and the new status. Use the [ADR template](adr/000-template.md) for decisions that change module boundaries or public contracts.
+
+A dependency name or exact tool version is not accepted merely by appearing in
+an example. Phase 1 must pin the Rust toolchain, Node version, package manager,
+Tauri CLI, and lockfiles. A security-critical dependency such as encrypted
+SQLite, terminal renderer, or SSH transport also requires maintenance, license,
+platform, and update-response evidence.

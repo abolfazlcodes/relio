@@ -26,7 +26,11 @@ Commands or scenarios used:
 
 ## Security and privacy
 
-- [ ] I checked the change for secrets, unsafe logging, command composition, filesystem scope, network exposure, and plugin capability impact.
+- [ ] I checked the change for secrets, unsafe logging, command composition,
+      filesystem scope, network exposure, and dynamic-code loading.
+- [ ] I checked IPC exposure, input/resource limits, encryption/migration,
+      update/supply-chain, and platform-specific trust assumptions where
+      relevant.
 - [ ] Any user-visible risk or migration impact is described above or in the release notes.
 
 ## Screenshots or recordings

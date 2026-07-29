@@ -1,215 +1,221 @@
 # Development Roadmap
 
-The roadmap is organized as independently usable milestones. Complexity is relative engineering effort for a small team that is still learning the desktop and systems portions of the stack; it is not a calendar promise.
+The roadmap is a sequence of independently usable milestones for a focused,
+local-first v1. Complexity is relative engineering effort, not a calendar
+promise. Every phase uses the same small trusted architecture; later phases do
+not introduce a second application runtime or hosted control plane.
 
 ## Phase 0 — Product and architecture foundation
 
-**Goal:** Make the product understandable and safe to implement.
+**Goal:** Make the focused product safe to implement.
 
-**Deliverables:** vision, competitor analysis, architecture decisions, module boundaries, security model, contribution workflow, roadmap, feature map, and initial issue templates.
+**Deliverables:** reviewed product scope, technical blueprint, architecture
+decisions, process and IPC model, workspace and persistence models, platform
+policy, performance budgets, security documentation, contribution workflow,
+roadmap, feature map, and issue templates.
 
 **Dependencies:** none.
 
-**Risks:** documenting assumptions as facts; choosing too many future abstractions.
+**Primary risks:** documenting assumptions as facts, speculative abstractions,
+unclear ownership, or a security boundary the target operating systems cannot
+enforce.
 
-**Learning objectives:** translate product goals into boundaries, evaluate desktop runtime tradeoffs, and write decision records.
+**Definition of done:** a contributor can explain the v1 feature boundary, data
+owners, trust boundaries, release gates, and deferred concepts. Licensing,
+provisional Tier 1 platforms, private security reporting, release-signing
+ownership, performance reference systems, and security-critical dependency
+licenses are resolved before implementation dependencies are accepted.
 
-**Estimated complexity:** Small, but high leverage.
+## Phase 1 — Application shell and command framework
 
-**Definition of done:** a contributor can explain what the first usable application is, what is deferred, where code belongs, and what must not be trusted.
+**Goal:** Produce a launchable cross-platform desktop shell.
 
-## Phase 1 — Application shell
-
-**Goal:** Produce a launchable cross-platform desktop shell with a minimal workbench.
-
-**Deliverables:** Tauri window, React/TypeScript frontend, Rust command bridge, navigation shell, error boundary, settings placeholder, basic diagnostics, packaging smoke test.
+**Deliverables:** Tauri window, React/TypeScript workbench, Rust command bridge
+with generated types, explicit per-window capabilities, restrictive content
+security policy, navigation shell, searchable command registry, semantic design
+tokens, error boundary, local diagnostics, and packaging smoke tests.
 
 **Dependencies:** Phase 0.
 
-**Risks:** platform webview differences, IPC shape churn, build tool friction.
+**Primary risks:** platform webview differences, over-broad IPC, build friction,
+and premature workbench complexity.
 
-**Learning objectives:** Tauri lifecycle, Rust/TypeScript IPC, desktop packaging, platform debugging.
+**Definition of done:** release builds launch on every provisional Tier 1
+target, show a usable empty workspace without a startup network request, expose
+no generic filesystem/shell/network command, pass content-policy and capability
+tests, and record startup performance on reference systems.
 
-**Estimated complexity:** Medium.
+## Phase 2 — Local terminal, tabs, and split panes
 
-**Definition of done:** the app launches on Windows, Linux, and macOS development targets and shows a usable empty workspace without network access.
+**Goal:** Make Relio useful as a local terminal.
 
-## Phase 2 — Local terminal and layout
-
-**Goal:** Make the product useful as a local terminal.
-
-**Deliverables:** PTY-backed local shell, xterm.js view, input/output streaming, resize, copy/paste, tabs, split panes, pane focus, close behavior, session metadata, graceful process cleanup, basic restore of layout.
+**Deliverables:** PTY-backed shell, xterm.js model/view separation, bounded
+input/output streams, resize, deliberate clipboard policy, tabs, split panes,
+focus and close behavior, session metadata, process-tree cleanup, bounded
+frontend-disconnect replay, and layout restore.
 
 **Dependencies:** Phase 1.
 
-**Risks:** terminal compatibility, output backpressure, process leaks, Windows shell behavior.
+**Primary risks:** terminal compatibility, hostile escape sequences,
+backpressure, process leaks, and Windows process-tree behavior.
 
-**Learning objectives:** PTYs, streams, terminal protocols, process supervision, rendering performance.
+**Definition of done:** users can work in multiple local panes for a full
+session and reopen the previous layout. Compatibility, output-gap, orphan
+cleanup, memory, input-latency, and terminal-protocol abuse tests pass.
 
-**Estimated complexity:** Large.
+## Phase 3 — Encrypted local data, workspaces, and credentials
 
-**Definition of done:** users can work in multiple local panes for a full session, run interactive programs, and reopen the app with the previous layout restored.
+**Goal:** Make local work durable, inspectable, and secure.
 
-## Phase 3 — Local data and settings
+**Deliverables:** SQLCipher-compatible SQLite, profile lock and one writer,
+forward migrations, encrypted recovery backup, workspace CRUD, global host
+references, scoped settings, versioned redacted export, OS credential-store
+integration, opaque credential handles, retention settings, and plaintext
+canary tests.
 
-**Goal:** Make work persistent and inspectable.
+**Dependencies:** Phase 1 and stable session identifiers from Phase 2.
 
-**Deliverables:** SQLite migrations, repositories, workspace CRUD, settings scopes, schema validation, export/import with redaction, OS credential-store integration for a test secret.
+**Primary risks:** database packaging, key loss, unavailable credential stores,
+migration defects, data corruption, and accidental secret exposure.
 
-**Dependencies:** Phase 1; session identifiers from Phase 2.
+**Definition of done:** settings and workspaces survive restart; a second writer
+is excluded; migration, recovery, and credential-store denial cases pass; and
+protected canaries do not appear in database side files, temporary files,
+backups, exports, IPC, or logs.
 
-**Risks:** migration mistakes, data corruption, secret leakage, premature schema coupling.
+## Phase 4 — Host management and SSH
 
-**Learning objectives:** desktop data directories, migrations, keychain APIs, transactional persistence.
+**Goal:** Connect reliably and transparently to remote hosts.
 
-**Estimated complexity:** Medium.
-
-**Definition of done:** settings and workspaces survive restart, migrations are tested, and exported data contains no plaintext credentials.
-
-## Phase 4 — SSH and host manager
-
-**Goal:** Connect reliably to real hosts.
-
-**Deliverables:** host profiles, groups/tags/favorites, known-host review flow, SSH config import/read-through, agent/key selection, jump-host support, interactive SSH sessions, connection diagnostics.
+**Deliverables:** host profiles, groups, tags, favorites, OpenSSH diagnosis,
+safe-subset SSH configuration parsing, protected generated configuration,
+Relio-managed known-host review, one-time askpass helper, agent/key selection,
+jump-host support, interactive SSH sessions, and typed diagnostics.
 
 **Dependencies:** Phases 2–3.
 
-**Risks:** platform differences, authentication edge cases, unsafe host-key behavior, subprocess lifecycle.
+**Primary risks:** OpenSSH/platform differences, executable configuration
+directives, helper spoofing, authentication edge cases, unsafe host-key
+behavior, and subprocess leaks.
 
-**Learning objectives:** SSH configuration, authentication, host-key verification, remote PTYs, network failure handling.
+**Definition of done:** users can create or import a host, review identity
+evidence, connect, and receive actionable errors without exposing secrets.
+Unknown, changed, and revoked keys; hostile arguments; jump failures; helper
+abuse; cancellation; and process cleanup pass negative tests.
 
-**Estimated complexity:** Large.
+## Phase 5 — SFTP, SCP, remote browser, and editing
 
-**Definition of done:** a user can create or import a host, connect, see identity and verification state, and receive actionable errors without exposing secrets.
+**Goal:** Make remote file operations first-class and safe.
 
-## Phase 5 — SFTP, file browser, and remote editing
-
-**Goal:** Operate on remote files without leaving the workspace.
-
-**Deliverables:** remote directory listing, upload/download, progress and cancellation, permissions display, local/remote file browser, explicit remote-edit save flow, conflict detection.
-
-**Dependencies:** Phase 4.
-
-**Risks:** partial transfers, file encoding, permission errors, accidental overwrites, symlink behavior.
-
-**Learning objectives:** SFTP semantics, file identity, temporary files, conflict-safe writes.
-
-**Estimated complexity:** Large.
-
-**Definition of done:** users can browse and transfer files with visible target context and edit a remote file with an explicit, conflict-aware save.
-
-## Phase 6 — Visual port forwarding
-
-**Goal:** Replace error-prone tunnel command composition with an understandable manager.
-
-**Deliverables:** local/remote/dynamic forwarding models, create/edit/stop/restart, bind-address warnings, state indicators, conflict diagnostics, workspace association.
+**Deliverables:** structured file-operation contract, bounded SFTP binary
+protocol over a separate supervised OpenSSH subsystem, remote directory
+listing, SFTP upload/download, SCP workflow only when diagnosed SFTP semantics
+are available, explicit refusal of legacy SCP, bounded progress and
+cancellation, permissions and symlink display, remote file browser, bounded
+built-in UTF-8 text editor, memory-only unsaved buffers, conflict-aware save,
+and atomic replacement where available.
 
 **Dependencies:** Phase 4.
 
-**Risks:** accidental exposure, orphaned listeners, reconnect behavior, privilege-required ports.
+**Primary risks:** malformed or oversized SFTP packets, request correlation,
+partial transfers, unsafe path interpretation, accidental legacy-protocol
+activation by an external executable, non-text paths, permission errors,
+accidental overwrite, symlink races, sensitive editor buffers, and filesystems
+without atomic rename.
 
-**Learning objectives:** socket lifecycle, forwarding semantics, safe defaults, cancellation.
+**Definition of done:** users can browse, transfer, and edit remote files with
+visible host and path context. Legacy SCP is unavailable. Tests cover
+hostile filenames and packets, interrupted transfer recovery, request-ID
+confusion, overwrite confirmation, conflicts, metadata limits, indeterminate
+external-command progress, editor size/encoding refusal, plaintext-draft
+absence, and best-effort memory cleanup on editor close.
 
-**Estimated complexity:** Medium to large.
+## Phase 6 — Port forwarding
 
-**Definition of done:** a user can create a tunnel, see exactly what it connects, verify state, and stop it without returning to a terminal command.
+**Goal:** Replace error-prone tunnel command composition with a clear manager.
 
-## Phase 7 — Infrastructure workspaces and detection
+**Deliverables:** local, remote, and dynamic forwarding models; create, edit,
+stop, and restart controls; loopback default; broad-bind confirmation; owned
+listener and control-socket supervision; status indicators; conflict
+diagnostics; and workspace association.
 
-**Goal:** Organize a project’s hosts, services, and operating context.
+**Dependencies:** Phase 4.
 
-**Deliverables:** workspace overview, host/service relationships, read-only detectors for Docker/Kubernetes/systemd/common runtimes, capability cards, safe next actions.
+**Primary risks:** accidental network exposure, orphaned listeners, reconnect
+duplication, and privileged ports.
 
-**Dependencies:** Phases 3–5.
+**Definition of done:** users can create a tunnel, see both endpoints and bind
+scope, verify state, and stop the owned listener. Reconnect cannot duplicate a
+listener, and Relio never kills an unrelated process merely because it uses the
+same port.
 
-**Risks:** false positives, remote command cost, permissions, vendor-specific assumptions.
+## Phase 7 — History, snippets, search, logging, and recording
 
-**Learning objectives:** capability detection, remote inventory, caching, plugin/provider boundaries.
+**Goal:** Improve recall and repeated command workflows without hiding shell
+truth or retaining data unexpectedly.
 
-**Estimated complexity:** Large.
+**Deliverables:** single-line command snippets, bounded parameter prompts,
+reviewed insertion without synthetic Enter, opt-in derived history, opt-in
+encrypted segmented recording, log viewer, local search indexes,
+command-palette completion, retention and free-space controls, sensitive-output
+warnings, and deletion workflows.
 
-**Definition of done:** users can see a useful, clearly labeled overview of a host or project and understand which actions are available and why.
+**Dependencies:** Phases 2–6.
 
-## Phase 8 — Workflows, history, recording, and search
+**Primary risks:** secrets in retained output or indexes, recording corruption,
+disk exhaustion, ambiguous command boundaries, and slow search.
 
-**Goal:** Reduce repeated operational work and improve recall.
+**Definition of done:** users can find retained data and reuse a reviewed
+snippet without automatic submission while understanding what is stored,
+encrypted, indexed, retained, exportable, and deletable. Recording and derived
+history remain off until enabled, and control-character, no-synthetic-Enter,
+bounded-queue, retention, deletion, and privacy tests pass.
 
-**Deliverables:** snippets, parameterized workflows, command history, session recording, log viewer, local search everywhere, retention controls, sensitive-output warnings.
+## Phase 8 — Theme engine, customization, and accessibility
 
-**Dependencies:** Phases 2–7.
+**Goal:** Deliver a polished, modern, customizable, keyboard-first workbench.
 
-**Risks:** storing secrets in output, index size, command parsing ambiguity, search performance.
+**Deliverables:** bundled presets, user-created local themes, semantic UI and
+terminal tokens, schema validation, local theme editing/reset, shortcut
+editing, responsive layouts, reduced motion, screen-reader coverage, WCAG 2.2
+AA contrast checks, hostile theme fixtures, and visual regression tests.
 
-**Learning objectives:** event-derived data, indexing, privacy-aware UX, command lifecycle detection.
+**Dependencies:** Phases 1–7.
 
-**Estimated complexity:** Large.
+**Primary risks:** unreadable themes, spoofed safety chrome, platform font and
+input differences, shortcut conflicts, and rendering regressions.
 
-**Definition of done:** users can find a previous command or log event, reuse a reviewed snippet, and understand what data is stored locally.
+**Definition of done:** users can customize appearance and keyboard behavior
+without loading scripts, arbitrary styles, fonts, or remote assets. Reserved
+safety surfaces remain identifiable and accessible under every valid theme.
 
-## Phase 9 — Theme engine and plugin SDK
+## Phase 9 — Hardening and stable release
 
-**Goal:** Let contributors extend and customize the product safely.
+**Goal:** Make Relio trustworthy to install, operate, update, and recover.
 
-**Deliverables:** semantic theme schema, theme validation, plugin manifest, process host, capability grants, command/view/detector contributions, SDK examples, compatibility test harness.
+**Deliverables:** previewed crash diagnostics, measured performance budgets,
+accessibility audit, threat-model review, independent security review, signed
+builds, checksums, software bill of materials, provenance, platform installers,
+signed updates, signing-key recovery exercise, migration and rollback tests,
+release notes, privacy review, and support matrix.
 
-**Dependencies:** Phases 1–8; stable IPC and operation contracts.
+**Dependencies:** all v1 feature phases.
 
-**Risks:** API churn, plugin crashes, permission confusion, arbitrary UI escape hatches.
+**Primary risks:** signing credential compromise, update replay, platform
+packaging failures, encrypted-data upgrade regressions, and support burden.
 
-**Learning objectives:** public API design, process isolation, protocol versioning, compatibility testing.
-
-**Estimated complexity:** Very large.
-
-**Definition of done:** an external contributor can build a documented plugin that adds a command or read-only detector without modifying the core repository.
-
-## Phase 10 — Optional AI assistant
-
-**Goal:** Add assistance without weakening local-first or execution safety.
-
-**Deliverables:** provider interface, explicit context selection, explain-command, explain-error, summarize-approved-log, draft-command, redaction controls, no-implicit-execution policy.
-
-**Dependencies:** Phases 8–9.
-
-**Risks:** secret leakage, hallucinated commands, provider outages, cost, user over-trust.
-
-**Learning objectives:** capability boundaries, privacy-preserving context, human-in-the-loop execution.
-
-**Estimated complexity:** Large.
-
-**Definition of done:** every AI response identifies its context and is clearly separated from executable terminal input.
-
-## Phase 11 — Optional sync and marketplace
-
-**Goal:** Add distribution and synchronization without making the desktop app cloud-dependent.
-
-**Deliverables:** signed plugin/theme packages, compatibility metadata, optional catalog, allowlisted settings sync, conflict UI, offline fallback.
-
-**Dependencies:** Phases 3 and 9; security review.
-
-**Risks:** supply-chain attacks, account pressure, sync conflicts, secret handling.
-
-**Learning objectives:** package signing, update channels, sync conflict models, service boundaries.
-
-**Estimated complexity:** Very large.
-
-**Definition of done:** disabling all network providers leaves the local product fully usable.
-
-## Phase 12 — Hardening and release
-
-**Goal:** Make the product trustworthy to install and maintain.
-
-**Deliverables:** crash diagnostics with opt-in telemetry policy, performance budgets, accessibility audit, threat-model review, signed builds, platform installers, upgrade/migration tests, release notes, support matrix.
-
-**Dependencies:** all previous phases selected for release.
-
-**Risks:** packaging credentials, platform signing, upgrade regressions, support burden.
-
-**Learning objectives:** release engineering, reproducible builds, distribution, incident response.
-
-**Estimated complexity:** Large.
-
-**Definition of done:** a clean machine can install, launch, upgrade, and uninstall a signed build on every supported platform with documented rollback guidance.
+**Definition of done:** a clean Tier 1 machine can verify, install, launch,
+upgrade, recover from a failed migration, roll back through the documented
+data-aware flow, and uninstall a signed build. Security, privacy,
+accessibility, performance, migration, and platform gates have evidence and no
+unresolved release blocker.
 
 ## Scope control
 
-Each phase must deliver a narrow, usable slice. A new feature that does not fit the current phase should become a roadmap change or a follow-up issue, not an invisible expansion of the milestone.
+Each phase delivers a narrow usable slice. A proposed capability must appear in
+the v1 feature map, fit the current trusted architecture, and include security,
+privacy, platform, performance, migration, and maintenance impact. Otherwise it
+requires an explicit scope decision and cannot enter a milestone implicitly.
+
+Concepts parked in [future ideas](future-ideas.md) create no v1 package, API,
+service, schema, permission, dependency, or compatibility requirement.
