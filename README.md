@@ -50,6 +50,7 @@ Start with the [documentation index](docs/README.md). The most important decisio
 - [Architecture overview](docs/architecture/overview.md)
 - [Technology decisions](docs/architecture/technology-decisions.md)
 - [Development roadmap](docs/roadmap.md)
+- [Master development tracker](docs/development/MILESTONES.md)
 - [Theme system](docs/architecture/theme-system.md)
 - [Security architecture](docs/security/README.md)
 - [Contributor guide](docs/development/contributing.md)

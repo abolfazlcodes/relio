@@ -78,6 +78,7 @@ This directory is the project’s architecture and product record. A feature is 
 
 ## Contribution
 
+- [Master development tracker](development/MILESTONES.md)
 - [Developer onboarding](development/developer-onboarding.md)
 - [Contributing guide](development/contributing.md)
 - [Coding standards](development/coding-standards.md)
@@ -85,4 +86,6 @@ This directory is the project’s architecture and product record. A feature is 
 
 ## How to use this documentation
 
-Architecture documents describe stable boundaries and constraints. Roadmap documents describe sequencing and may change. If implementation reveals a meaningful change in a boundary or tradeoff, update the relevant document and add an architecture decision record before or alongside the code change.
+Architecture documents describe stable boundaries and constraints. The roadmap
+describes strategic phases; the master development tracker owns implementation
+order, status, checklists, and completion evidence. If implementation reveals a meaningful change in a boundary or tradeoff, update the relevant document and add an architecture decision record before or alongside the code change.

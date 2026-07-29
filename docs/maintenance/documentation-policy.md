@@ -12,7 +12,8 @@ Relio avoids multiple documents claiming authority over the same decision:
 | Focused subsystem rationale | Architecture documents |
 | Historical architectural decisions | ADRs |
 | Security invariants and risks | Security documents and threat model |
-| Sequencing | Roadmap |
+| Strategic phases | Roadmap |
+| Implementation order, status, and completion evidence | Master development tracker |
 | Delivery gates | Operations documents |
 | Maintainer process | Maintenance documents |
 

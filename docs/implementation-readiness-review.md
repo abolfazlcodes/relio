@@ -82,6 +82,9 @@ inside code.
 
 ## Definition of ready
 
+Execution status and completion evidence belong only in the
+[master development tracker](development/MILESTONES.md).
+
 A feature work item must name:
 
 - owning frontend feature and Rust application service;

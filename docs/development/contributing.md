@@ -9,13 +9,16 @@ and remove secrets from logs.
 
 ## Before opening a pull request
 
+Read the [master development tracker](MILESTONES.md). Implementation pull
+requests are limited to one active milestone and may not skip its dependencies.
+
 Choose an issue marked ready or first confirm scope with the owning area. A
 maintainer may close technically valid work that creates an unsupported product
 commitment, bypasses an owner, or is too large to review safely. Draft pull
 requests are welcome for early boundary feedback.
 
 
-- identify the roadmap phase or issue;
+- identify the active milestone and its tracking issue;
 - update relevant documentation when behavior or boundaries change;
 - keep the change focused;
 - add tests at the lowest useful layer;

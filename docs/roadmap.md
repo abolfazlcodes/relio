@@ -1,5 +1,9 @@
 # Development Roadmap
 
+This roadmap defines strategic phases and rationale. The
+[master development tracker](development/MILESTONES.md) is the single source
+of truth for implementation order, status, checklists, and completion evidence.
+
 The roadmap is a sequence of independently usable milestones for a focused,
 local-first v1. Complexity is relative engineering effort, not a calendar
 promise. Every phase uses the same small trusted architecture; later phases do
