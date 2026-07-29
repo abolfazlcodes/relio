@@ -753,8 +753,8 @@ trusted UI, or automatic clipboard/URI authority.
 
 ### Status
 
-- [ ] Not Started
-- [x] In Progress
+- [x] Not Started
+- [ ] In Progress
 - [ ] Blocked
 - [ ] Complete
 

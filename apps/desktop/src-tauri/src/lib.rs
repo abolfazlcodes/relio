@@ -5,7 +5,6 @@ pub mod launch_endpoint;
 pub mod lifecycle;
 pub mod local_metadata;
 pub mod pty;
-pub mod session;
 pub mod session_security;
 pub mod single_instance;
 #[cfg(feature = "desktop-runtime")]
