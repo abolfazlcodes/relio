@@ -143,3 +143,41 @@ No credential bytes, generic filesystem/network/shell primitive, or raw
 infrastructure error is represented in this contract. The webview still has an
 empty Tauri capability; feature-specific commands and permissions are introduced
 only by their owning milestones.
+
+
+## 2026-07-29 — Milestone 05: Design System and Accessibility Baseline
+
+### Outcome
+
+Completed the bundled semantic-token and accessible component baseline for future
+Relio feature surfaces.
+
+### Decisions
+
+- Components consume dark/light semantic tokens derived from the normative design
+  system; ordinary feature styling no longer depends on palette literals.
+- Native controls and dialog semantics provide the baseline before custom behavior.
+  Tabs use roving focus and expected arrow/Home/End navigation.
+- Trusted confirmation uses a native modal dialog, invariant reserved tokens, exact
+  challenge identity, escaped evidence, safe cancellation, and an explicit action.
+  Rust remains the authorization boundary.
+- Forced colors, increased contrast, reduced motion, wrapping, rem sizing, and the
+  720 × 480 minimum content area are structural CSS requirements.
+- The deterministic component fixture includes long, bidirectional, non-Latin, and
+  markup-shaped hostile content for Tier 1 visual review.
+
+### Verification
+
+- Strict TypeScript typecheck: **Passed**.
+- Component semantic, keyboard, loading, hostile-content, and trust tests: **5 passed**.
+- Bundled dark/light WCAG AA contrast-pair tests: **6 passed**.
+- Complete frontend test suite: **20 passed**.
+- Production frontend bundle: **Passed**.
+- Tier 1 screenshot baselines and manual screen-reader checks: **Deferred to native
+  visual CI**, with review modes and fixtures documented.
+
+### Security Notes
+
+Theme data cannot supply trusted safety tokens or approval state. Remote and
+imported strings are rendered as text, and confirmation decisions return the
+original core-issued challenge rather than constructing authority in the view.

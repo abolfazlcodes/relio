@@ -3,6 +3,8 @@ import { createRoot } from "react-dom/client";
 import { App } from "./App";
 import { BootstrapBoundary } from "./BootstrapBoundary";
 import { isSupportedPlatform, UnsupportedPlatform } from "./UnsupportedPlatform";
+import "./ui/tokens.css";
+import "./ui/components.css";
 import "./styles.css";
 
 const element = document.getElementById("root");

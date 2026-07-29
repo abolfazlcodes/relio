@@ -40,6 +40,7 @@ The primary nouns are:
 8. [Keyboard-first experience](keyboard-first-experience.md)
 9. [Security UX](security-ux.md)
 10. [Low-fidelity wireframes](wireframes.md)
+11. [Component library implementation contract](component-library.md)
 
 ## Normative language
 

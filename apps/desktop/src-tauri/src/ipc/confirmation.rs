@@ -16,7 +16,7 @@ pub struct ConfirmationChallenge {
     pub nonce: Uuid,
     pub operation_id: Uuid,
     pub displayed_digest: String,
-    pub expires_at_unix_ms: i64,
+    pub expires_at_unix_ms: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize, TS)]
@@ -52,7 +52,7 @@ impl ConfirmationStore {
             nonce: Uuid::now_v7(),
             operation_id,
             displayed_digest,
-            expires_at_unix_ms,
+            expires_at_unix_ms: expires_at_unix_ms.to_string(),
         };
         self.active
             .lock()
@@ -72,7 +72,10 @@ impl ConfirmationStore {
             .expect("confirmation mutex poisoned")
             .remove(&decision.nonce)
             .ok_or_else(PublicError::replayed_decision)?;
-        if challenge.expires_at_unix_ms < now_unix_ms
+        if challenge
+            .expires_at_unix_ms
+            .parse::<i64>()
+            .map_or(true, |expiry| expiry < now_unix_ms)
             || challenge.displayed_digest != decision.displayed_digest
         {
             return Err(PublicError::replayed_decision());

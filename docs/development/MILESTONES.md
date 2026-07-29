@@ -7,9 +7,9 @@ and maintenance documents remain authoritative for behavior and constraints.
 
 ## Overall Progress
 
-**4 / 39 Milestones Complete**
+**5 / 39 Milestones Complete**
 
-**Progress: 10%**
+**Progress: 13%**
 
 ## How to use this tracker
 
@@ -355,9 +355,9 @@ capabilities, confirmation nonces, and diagnostic redaction in the core.
 ### Status
 
 - [ ] Not Started
-- [x] In Progress
+- [ ] In Progress
 - [ ] Blocked
-- [ ] Complete
+- [x] Complete
 
 ### Goal
 
@@ -406,14 +406,14 @@ untrusted content or future theme data.
 
 ### Checklist
 
-- [ ] Define semantic token baseline.
-- [ ] Implement core controls and states.
-- [ ] Implement focus and keyboard conventions.
-- [ ] Implement trusted confirmation component.
-- [ ] Add reduced-motion and text-scaling behavior.
-- [ ] Add component accessibility tests.
-- [ ] Add visual regression fixtures.
-- [ ] Document component usage boundaries.
+- [x] Define semantic token baseline.
+- [x] Implement core controls and states.
+- [x] Implement focus and keyboard conventions.
+- [x] Implement trusted confirmation component.
+- [x] Add reduced-motion and text-scaling behavior.
+- [x] Add component accessibility tests.
+- [x] Add visual regression fixtures.
+- [x] Document component usage boundaries.
 
 ---
 
