@@ -1,0 +1,28 @@
+# JavaScript / TypeScript dependencies and build output
+node_modules/
+dist/
+build/
+.vite/
+
+# Rust and desktop build output
+target/
+src-tauri/target/
+
+# Local development files
+.env
+.env.*
+!.env.example
+*.local
+*.log
+*.swp
+.DS_Store
+Thumbs.db
+
+# Generated or private application data
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.db
+coverage/
+playwright-report/
+test-results/
