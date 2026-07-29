@@ -4,6 +4,10 @@
 
 State belongs to the smallest layer that can own it. The application must not create one global store containing UI state, domain state, live terminal bytes, and secrets.
 
+The normative frontend store split, revision/reconciliation rules, Rust data
+ownership, and lifecycle states are in
+[implementation architecture](implementation-architecture.md).
+
 ## State categories
 
 | Category | Owner | Persistence | Examples |

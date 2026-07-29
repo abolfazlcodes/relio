@@ -1,5 +1,9 @@
 # Versioning Strategy
 
+Release support windows, migration reader windows, platform lifecycle, and
+deprecation notice periods are normative in the
+[compatibility and support policy](../maintenance/compatibility-policy.md).
+
 ## Application versions
 
 Use Semantic Versioning for the application:

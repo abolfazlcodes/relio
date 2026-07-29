@@ -24,10 +24,13 @@ This directory is the project’s architecture and product record. A feature is 
 
 ## Architecture
 
+- [Implementation readiness review](implementation-readiness-review.md)
+- [Normative implementation architecture and lifecycle contracts](architecture/implementation-architecture.md)
 - [Technical blueprint and architecture review](architecture/technical-blueprint.md)
 - [Architecture overview](architecture/overview.md)
 - [IPC and process model](architecture/ipc-and-process-model.md)
 - [Technology decisions](architecture/technology-decisions.md)
+- [Architecture decision record index](architecture/adr/README.md)
 - [Repository structure](architecture/repository-structure.md)
 - [Workspace architecture](architecture/workspaces.md)
 - [Persistence architecture](architecture/persistence.md)
@@ -54,6 +57,15 @@ This directory is the project’s architecture and product record. A feature is 
 - [Supply-chain security](security/supply-chain.md)
 - [Secure development lifecycle and disclosure](security/secure-development.md)
 - [Privacy principles](security/privacy.md)
+
+## Maintenance
+
+- [Maintenance index](maintenance/README.md)
+- [Ten-year maintainability review](maintenance/maintainability-review.md)
+- [Governance and ownership](maintenance/governance.md)
+- [Dependency lifecycle policy](maintenance/dependency-policy.md)
+- [Documentation lifecycle](maintenance/documentation-policy.md)
+- [Compatibility and support policy](maintenance/compatibility-policy.md)
 
 ## Delivery and operations
 

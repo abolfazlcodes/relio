@@ -15,11 +15,14 @@ The repository remains documentation-only until Phase 1 begins.
 .
 ├── .github/
 │   ├── ISSUE_TEMPLATE/
+│   ├── CODEOWNERS              # review-enforced area ownership
 │   └── workflows/
 ├── docs/
 │   ├── architecture/
 │   │   └── adr/
+│   │       └── README.md          # indexed decision history
 │   ├── development/
+│   ├── maintenance/
 │   ├── operations/
 │   ├── product/
 │   └── security/
@@ -48,6 +51,7 @@ The repository remains documentation-only until Phase 1 begins.
 │   ├── end-to-end/
 │   ├── performance/
 │   └── packaging/
+├── LICENSE                    # selected before implementation dependencies
 ├── Cargo.toml
 └── package.json
 ```

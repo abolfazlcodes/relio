@@ -337,7 +337,7 @@ it. Revoked, malformed, or ambiguous keys do not offer `Trust once`.
 
 Before exceeding the default warning threshold, Relio shows a non-blocking
 review listing live session count and estimated impact. The user may continue
-within the hard runtime limit. At the hard limit, creation is blocked with
+up to the v1 hard limit of 32 live sessions per profile. At that limit, creation is blocked with
 close-session remediation.
 
 ### Close behavior

@@ -2,6 +2,12 @@
 
 These decisions describe the intended foundation, not a frozen dependency lockfile. Revisit a decision when new evidence changes the product constraints, not merely because another technology is fashionable.
 
+Every accepted technology has an owning area, compatibility test seam, and exit
+strategy under the [dependency lifecycle policy](../maintenance/dependency-policy.md).
+“Accepted direction” must become an exact pinned ADR before its implementation
+phase starts; it is not permission to choose a library incidentally in a pull
+request.
+
 ## Decision summary
 
 | Area | Decision | Status |
@@ -38,6 +44,10 @@ may still be needed in the Rust core for platform-specific features.
 
 Reference: [Tauri: What is Tauri?](https://v2.tauri.app/start/)
 
+Tauri plugins are not enabled as convenience bundles. Each plugin and capability
+is adopted as a direct security-sensitive dependency with an explicit command
+allowlist, window scope, platform matrix, and removal path.
+
 ## ADR-002: React and TypeScript for the workbench
 
 **Context:** The product is UI-heavy, requires a coherent design system, and
@@ -61,6 +71,11 @@ contracts explicit, and React has a broad contributor and testing ecosystem.
 **Why:** xterm.js exposes terminal buffers, parser hooks, link handling, Unicode behavior, and an addon model. It lets us focus early engineering on PTY lifecycle, transport reliability, session UX, and performance instead of rebuilding terminal emulation.
 
 **Tradeoffs:** The renderer runs in the webview and must be tuned for large output. Some advanced terminal protocols may require addons or a later native renderer. The backend must not depend on xterm.js-specific data structures.
+
+Every addon is a separate direct dependency and security review surface. V1
+uses only required, pinned addons whose source, disposal lifecycle, parser hooks,
+and terminal-input access have been reviewed; an addon is not trusted merely
+because xterm.js can load it.
 
 Reference: [xterm.js documentation](https://xtermjs.org/docs/)
 
@@ -106,6 +121,11 @@ rather than turning the database into an unbounded event log.
 
 See [ADR-007](adr/007-encryption-at-rest.md) and
 [persistence architecture](persistence.md).
+
+Before Phase 3, a focused ADR must select the exact encrypted SQLite provider,
+Rust binding, cryptographic backend, build mode, license/attribution path, and
+cross-platform update strategy. “SQLCipher-compatible” is an architectural
+requirement, not a substitutable package name.
 
 ## ADR-006: no dynamic application-code loading in v1
 

@@ -2,7 +2,11 @@
 
 Security issues must not be reported in public issues or discussions.
 
-Until a dedicated private reporting address is published, contact the maintainers through the private channel listed in the repository metadata and include:
+Relio has no supported public release yet. A named private reporting address is
+a release blocker. Until it is published, do not place sensitive details in a
+public issue; contact the repository owner privately through the hosting
+platform if that option is available. If no private channel exists, retain the
+report until the project publishes one. A report should include:
 
 - affected version or commit;
 - operating system and environment;

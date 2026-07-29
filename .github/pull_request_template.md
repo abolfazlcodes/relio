@@ -8,6 +8,13 @@
 - [ ] I identified the relevant roadmap phase or issue.
 - [ ] No unrelated generated files or formatting changes are included.
 
+## Ownership and compatibility
+
+- [ ] I identified the owning area and requested its reviewers.
+- [ ] I documented compatibility, migration, deprecation, and rollback impact.
+- [ ] New dependencies follow the dependency lifecycle policy, or none were added.
+- [ ] New tests/fixtures have an owner and a clear protected behavior.
+
 ## Verification
 
 - [ ] Unit tests
@@ -17,6 +24,10 @@
 - [ ] Performance verification, if rendering, sessions, search, or startup is affected
 
 Commands or scenarios used:
+
+## Dependencies
+
+<!-- List direct dependency additions/upgrades/removals and link their adoption evidence. Write “None” when unchanged. -->
 
 ## Documentation
 

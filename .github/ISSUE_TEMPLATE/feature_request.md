@@ -18,6 +18,10 @@ assignees: []
 
 ## Alternatives and current workaround
 
+## Maintenance and compatibility cost
+
+<!-- Which platforms, dependencies, persisted formats, tests, support promises, and owning area would this add? -->
+
 ## Security or privacy considerations
 
 ## Additional context

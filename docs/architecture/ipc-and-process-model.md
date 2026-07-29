@@ -6,6 +6,11 @@ This document defines authority, process isolation, contract ownership,
 streaming, cancellation, and shutdown. It is security-sensitive because a
 webview compromise must not become unrestricted OS access.
 
+The concrete command inventory, envelopes, confirmation challenge, stream
+protocol, reconciliation rules, and lifecycle contracts are normative in
+[implementation architecture](implementation-architecture.md). This document
+defines their security rationale.
+
 ## Process topology
 
 ### Trusted desktop process

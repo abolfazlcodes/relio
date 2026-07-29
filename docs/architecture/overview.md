@@ -146,8 +146,11 @@ undermined by speculative abstractions.
 
 ## Implementation baseline
 
-The complete reviewed constraints are in the
-[technical blueprint](technical-blueprint.md), with focused detail in:
+The normative component, runtime, IPC, ownership, lifecycle, error, logging,
+testing, and build contracts are in the
+[implementation architecture](implementation-architecture.md). The complete
+reviewed constraints are in the [technical blueprint](technical-blueprint.md),
+with focused detail in:
 
 - [workspace architecture](workspaces.md);
 - [persistence architecture](persistence.md);

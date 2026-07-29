@@ -63,8 +63,9 @@ at once. Default runtime limits protect the system before these maxima.
 - Session, transfer, recording, and search queues are byte- and item-bounded.
 - UI lists and log views page or virtualize data.
 - Search returns a bounded first page and supports cancellation.
-- Session supervisors have configurable global and per-host limits; the default
-  warns before exceeding 20 live sessions.
+- Session supervisors use the versioned capacity policy: v1 warns before
+  exceeding 20 live sessions and blocks creation at 32 sessions per profile.
+  Per-host limits remain provider-configurable within that hard profile bound.
 - The built-in remote text editor refuses content above the 10 MiB hard limit
   and must not duplicate the full buffer through general-purpose application
   state.

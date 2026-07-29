@@ -2,6 +2,10 @@
 
 Testing is layered so most behavior can be verified without a desktop window, network, or real production host.
 
+The normative harness topology, CI lanes, lifecycle state-table coverage, and
+release evidence are defined in
+[implementation architecture](../architecture/implementation-architecture.md#19-testing-architecture).
+
 ## Test pyramid
 
 ### Unit tests
@@ -54,6 +58,12 @@ sessions. Use the datasets and budgets in
 [performance and capacity](../architecture/performance-and-capacity.md).
 
 ## Test policy
+
+Every non-trivial suite has an owning area, documented purpose, expected runtime,
+fixture provenance, failure-triage instructions, and retirement condition. A
+test that no longer protects supported behavior is removed or rewritten rather
+than preserved as ritual.
+
 
 - a bug fix adds a regression test at the lowest useful layer;
 - security-sensitive behavior has both positive and negative tests;

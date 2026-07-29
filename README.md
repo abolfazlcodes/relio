@@ -1,6 +1,6 @@
-# Developer Operations Workspace
+# Relio
 
-> Project: Relio
+> A local-first developer operations workspace
 
 An open-source, local-first desktop workspace for operating development and infrastructure environments.
 
@@ -34,7 +34,7 @@ requests.
 
 ## Planned capabilities
 
-Terminal sessions, tabs, split panes, session restore, SSH, SFTP, SCP, host and
+Terminal sessions, tabs, split panes, session restore, SSH, SFTP, SCP only with diagnosed SFTP semantics, host and
 workspace management, command snippets and history, command palette, local
 search, logging, session recording, visual port forwarding, remote file
 browsing/editing, and a built-in theme engine.
@@ -53,6 +53,7 @@ Start with the [documentation index](docs/README.md). The most important decisio
 - [Theme system](docs/architecture/theme-system.md)
 - [Security architecture](docs/security/README.md)
 - [Contributor guide](docs/development/contributing.md)
+- [Governance and long-term maintenance](docs/maintenance/README.md)
 
 ## Project status
 
@@ -60,6 +61,7 @@ Start with the [documentation index](docs/README.md). The most important decisio
 | --- | --- |
 | Product definition | Documented |
 | Architecture | Reviewed implementation baseline documented |
+| Governance and maintenance | Policies documented; named owners pending |
 | Application shell | Not started |
 | Terminal runtime | Not started |
 | SSH and host management | Not started |

@@ -9,6 +9,12 @@ and remove secrets from logs.
 
 ## Before opening a pull request
 
+Choose an issue marked ready or first confirm scope with the owning area. A
+maintainer may close technically valid work that creates an unsupported product
+commitment, bypasses an owner, or is too large to review safely. Draft pull
+requests are welcome for early boundary feedback.
+
+
 - identify the roadmap phase or issue;
 - update relevant documentation when behavior or boundaries change;
 - keep the change focused;
@@ -31,6 +37,10 @@ commit explains one coherent change, such as
 `Document host-key verification decision flow`.
 
 ## Review expectations
+
+Review ownership and escalation follow the [governance policy](../maintenance/governance.md).
+Dependency changes follow the [dependency lifecycle policy](../maintenance/dependency-policy.md).
+
 
 Reviewers should evaluate behavior, boundaries, failure handling, security, accessibility, tests, and documentation. “Works on my machine” is not sufficient for a cross-platform desktop feature; identify platform assumptions explicitly.
 

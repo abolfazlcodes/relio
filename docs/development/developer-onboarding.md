@@ -8,10 +8,16 @@ Read, in order:
 2. [Feature map](../product/feature-map.md)
 3. [Technical blueprint](../architecture/technical-blueprint.md)
 4. [Architecture overview](../architecture/overview.md)
-5. [Security architecture](../security/README.md)
-6. [Technology decisions](../architecture/technology-decisions.md)
-7. [Roadmap](../roadmap.md)
-8. [Contributing guide](contributing.md)
+5. [Implementation readiness review](../implementation-readiness-review.md)
+6. [Implementation architecture](../architecture/implementation-architecture.md)
+7. [Security architecture](../security/README.md)
+8. [Technology decisions](../architecture/technology-decisions.md)
+9. [Roadmap](../roadmap.md)
+10. [Contributing guide](contributing.md)
+
+Before making a non-trivial change, also read the relevant owning-area document
+and [governance policy](../maintenance/governance.md). Dependency changes
+require the [dependency lifecycle policy](../maintenance/dependency-policy.md).
 
 At this stage, the repository is intentionally documentation-only. Do not create application code until the relevant phase is selected and its acceptance criteria are understood.
 

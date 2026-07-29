@@ -1,5 +1,9 @@
 # Release Strategy
 
+The normative build graph, isolation boundaries, artifact identity, and
+promotion model are in
+[implementation architecture](../architecture/implementation-architecture.md#20-build-architecture).
+
 ## Release channels
 
 - **Nightly:** automated builds for contributors; may be unstable and must not be recommended for sensitive production operations.
@@ -7,6 +11,11 @@
 - **Stable:** signed, documented releases with migration and rollback guidance.
 
 The exact cadence should follow project capacity. Predictable quality is more important than frequent version numbers.
+
+Published maintenance windows and platform lifecycle rules are defined in the
+[compatibility and support policy](../maintenance/compatibility-policy.md). A
+release cadence must not create more supported lines than maintainers can patch,
+build, sign, test, and recover.
 
 ## Build and artifact requirements
 

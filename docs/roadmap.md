@@ -210,6 +210,14 @@ data-aware flow, and uninstall a signed build. Security, privacy,
 accessibility, performance, migration, and platform gates have evidence and no
 unresolved release blocker.
 
+## Maintenance gate
+
+Each phase assigns an owning area, dependency inventory changes, documentation
+owner, support impact, and removal/rollback strategy. A milestone is not done if
+its tests, fixtures, platform behavior, or runbook have no maintainer. Phase 0
+also establishes the ownership map and governance policy; Phase 9 rehearses
+maintainer departure and release/security role recovery.
+
 ## Scope control
 
 Each phase delivers a narrow usable slice. A proposed capability must appear in
