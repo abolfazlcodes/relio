@@ -98,6 +98,21 @@ content cannot create, approve, obscure, or imitate the trusted confirmation
 surface. Replaying a previous request ID or operation ID does not repeat a
 privileged action.
 
+## Local terminal commands
+
+The main webview capability grants exactly six feature commands; no generic shell, process, filesystem, network, opener, or clipboard Tauri permission exists. All objects reject unknown fields in Rust before use. UUIDs identify sessions and monotonic counters cross IPC as decimal strings to avoid JavaScript integer truncation.
+
+| Command | Request | Response or channel |
+| --- | --- | --- |
+| `terminal_list_shell_profiles` | none | bounded `ShellProfileSummary[]` without executable paths |
+| `terminal_start_local` | validated profile ID and PTY dimensions plus one Tauri channel | session ID, initial input counter, maximum credit; ordered output/gap/exit/failure events |
+| `terminal_grant_output_credit` | session ID and positive bounded bytes | unit |
+| `terminal_send_input` | session ID, decimal input sequence, bounded bytes | unit |
+| `terminal_resize` | session ID and validated cell/pixel dimensions | unit |
+| `terminal_stop` | session ID | unit after graceful-or-forced stop completes |
+
+The backend owns the session and accepts only the currently active session ID in Milestone 10. Milestone 11 replaces that temporary single-session capacity with the documented session registry; command names and byte semantics remain stable. Channel loss stops the current temporary session because no backend reattachment authority exists yet. Output drains before the exit event, and errors cross only as `PublicError` or safe message keys.
+
 ## Events
 
 Events report facts such as `session.state_changed` or

@@ -22,9 +22,16 @@ const capability = JSON.parse(
 const html = readFileSync(resolve(desktopRoot, "index.html"), "utf8");
 
 describe("desktop shell security configuration", () => {
-  it("grants no privileged capability permissions", () => {
+  it("grants only the bounded local-terminal capability permissions", () => {
     expect(tauriConfig.app.security.capabilities).toEqual(["main"]);
-    expect(capability.permissions).toEqual([]);
+    expect(capability.permissions).toEqual([
+      "allow-terminal-list-shell-profiles",
+      "allow-terminal-start-local",
+      "allow-terminal-grant-output-credit",
+      "allow-terminal-send-input",
+      "allow-terminal-resize",
+      "allow-terminal-stop",
+    ]);
   });
 
   it("blocks remote and executable content in production", () => {

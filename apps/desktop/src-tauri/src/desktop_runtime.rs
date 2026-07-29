@@ -36,6 +36,17 @@ fn run_inner() -> Result<(), Box<dyn std::error::Error>> {
     let last_geometry = Arc::new(Mutex::new(previous_metadata.window.clone().map(Into::into)));
 
     let application = tauri::Builder::default()
+        .manage(Arc::new(
+            crate::terminal_commands::TerminalService::default(),
+        ))
+        .invoke_handler(tauri::generate_handler![
+            crate::terminal_commands::terminal_list_shell_profiles,
+            crate::terminal_commands::terminal_start_local,
+            crate::terminal_commands::terminal_grant_output_credit,
+            crate::terminal_commands::terminal_send_input,
+            crate::terminal_commands::terminal_resize,
+            crate::terminal_commands::terminal_stop,
+        ])
         .setup({
             let shutdown = Arc::clone(&shutdown);
             move |app| {

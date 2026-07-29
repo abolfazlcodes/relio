@@ -11,6 +11,7 @@ pub enum ErrorSubsystem {
     Ipc,
     Operation,
     Stream,
+    Terminal,
     Policy,
 }
 
@@ -119,6 +120,70 @@ impl PublicError {
             "stream.credit_exceeded",
             ErrorSubsystem::Stream,
             UserAction::None,
+        )
+    }
+
+    pub fn terminal_profile() -> Self {
+        Self::new(
+            "terminal.profile_unavailable",
+            ErrorSubsystem::Terminal,
+            UserAction::Review,
+        )
+    }
+
+    pub fn terminal_state() -> Self {
+        Self::new(
+            "terminal.state_invalid",
+            ErrorSubsystem::Terminal,
+            UserAction::Refresh,
+        )
+    }
+
+    pub fn terminal_capacity() -> Self {
+        Self::new(
+            "terminal.capacity_reached",
+            ErrorSubsystem::Terminal,
+            UserAction::Review,
+        )
+    }
+
+    pub fn terminal_runtime() -> Self {
+        Self::new(
+            "terminal.runtime_failed",
+            ErrorSubsystem::Terminal,
+            UserAction::Retry,
+        )
+    }
+
+    pub fn terminal_not_found() -> Self {
+        Self::new(
+            "terminal.not_found",
+            ErrorSubsystem::Terminal,
+            UserAction::Refresh,
+        )
+    }
+
+    pub fn terminal_request() -> Self {
+        Self::new(
+            "terminal.request_invalid",
+            ErrorSubsystem::Terminal,
+            UserAction::Review,
+        )
+    }
+
+    pub fn terminal_backpressure() -> Self {
+        Self::new(
+            "terminal.input_backpressure",
+            ErrorSubsystem::Terminal,
+            UserAction::Retry,
+        )
+    }
+
+    pub fn terminal_unsupported() -> Self {
+        Self::new(
+            "terminal.platform_unsupported",
+            ErrorSubsystem::Terminal,
+            UserAction::Review,
         )
     }
 

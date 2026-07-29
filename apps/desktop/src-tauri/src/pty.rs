@@ -3,7 +3,7 @@ use std::ffi::OsString;
 use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
-use std::sync::mpsc::{self, Receiver, SyncSender, TrySendError};
+use std::sync::mpsc::{self, Receiver, RecvTimeoutError, SyncSender, TrySendError};
 use std::sync::{Arc, Condvar, Mutex};
 use std::thread;
 use std::time::{Duration, Instant};
@@ -226,6 +226,8 @@ pub enum PtyError {
     InputBackpressure,
     #[error("terminal output is unavailable")]
     OutputClosed,
+    #[error("terminal output is not ready")]
+    OutputPending,
     #[error("PTY resize failed")]
     ResizeFailed,
     #[error("shell termination failed")]
@@ -568,7 +570,10 @@ impl LocalPtySession {
             .lock()
             .map_err(|_| PtyError::OutputClosed)?
             .recv_timeout(timeout)
-            .map_err(|_| PtyError::OutputClosed)
+            .map_err(|error| match error {
+                RecvTimeoutError::Timeout => PtyError::OutputPending,
+                RecvTimeoutError::Disconnected => PtyError::OutputClosed,
+            })
     }
 
     pub fn send_input(&self, sequence: u64, bytes: Vec<u8>) -> Result<(), PtyError> {

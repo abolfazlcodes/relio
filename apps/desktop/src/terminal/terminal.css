@@ -1,0 +1,42 @@
+.terminal-pane {
+  display: grid;
+  min-height: 24rem;
+  grid-template-rows: auto auto minmax(18rem, 1fr) auto;
+  gap: var(--space-2);
+}
+.terminal-toolbar {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.terminal-toolbar > div { display: flex; flex-wrap: wrap; gap: var(--space-1); }
+.terminal-title {
+  overflow: hidden;
+  color: var(--color-text-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.terminal-host {
+  min-width: 0;
+  min-height: 18rem;
+  overflow: hidden;
+  padding: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-surface);
+  background: #0b0f14;
+}
+.terminal-host .xterm { height: 100%; }
+.terminal-status { margin: 0; color: var(--color-text-secondary); font-size: 0.75rem; }
+.terminal-review, .terminal-uri {
+  display: block;
+  max-height: 16rem;
+  overflow: auto;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border-strong);
+  color: var(--color-text-primary);
+  background: #0b0f14;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}

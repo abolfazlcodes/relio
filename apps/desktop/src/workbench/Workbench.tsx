@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { CommandPalette } from "../actions/CommandPalette";
 import type { WorkbenchActionContext } from "./actions";
 import { sectionActionId, workbenchActionRegistry, workbenchShortcutResolver } from "./actions";
@@ -6,6 +6,11 @@ import { ActivityRail } from "./ActivityRail";
 import { ContextSidebar } from "./ContextSidebar";
 import { routeById, type RouteId } from "./routes";
 import { SurfaceState } from "./SurfaceState";
+
+const TerminalPane = lazy(async () => {
+  const module = await import("../terminal/TerminalPane");
+  return { default: module.TerminalPane };
+});
 
 export function Workbench() {
   const [routeId, setRouteId] = useState<RouteId>("workspaces");
@@ -117,13 +122,19 @@ export function Workbench() {
                 {activeItem}
               </h1>
             </div>
-            <span className="capability-label">Preview only</span>
+            <span className="capability-label">{routeId === "workspaces" && activeItem === "Sessions" ? "Local runtime" : "Preview only"}</span>
           </div>
-          <SurfaceState
-            description={route.description}
-            kind="empty"
-            title={`No ${activeItem.toLocaleLowerCase()} yet`}
-          />
+          {routeId === "workspaces" && activeItem === "Sessions" ? (
+            <Suspense fallback={<SurfaceState description="Loading the bundled terminal renderer." kind="loading" title="Loading terminal" />}>
+              <TerminalPane />
+            </Suspense>
+          ) : (
+            <SurfaceState
+              description={route.description}
+              kind="empty"
+              title={`No ${activeItem.toLocaleLowerCase()} yet`}
+            />
+          )}
         </section>
       </main>
       <aside

@@ -7,9 +7,9 @@ and maintenance documents remain authoritative for behavior and constraints.
 
 ## Overall Progress
 
-**9 / 39 Milestones Complete**
+**10 / 39 Milestones Complete**
 
-**Progress: 23%**
+**Progress: 26%**
 
 ## How to use this tracker
 
@@ -687,9 +687,9 @@ The app runs with user privileges and owns only children it created.
 ### Status
 
 - [ ] Not Started
-- [x] In Progress
+- [ ] In Progress
 - [ ] Blocked
-- [ ] Complete
+- [x] Complete
 
 ### Goal
 
@@ -704,7 +704,7 @@ resize, Unicode, URI, and accessibility behavior.
 ### Deliverables
 
 - xterm.js terminal model/view adapter.
-- Stream credit, batching, replay, and explicit output-gap display.
+- Stream credit, batching, renderer-local continuity, and explicit output-gap display. Backend replay after total webview loss belongs to Milestone 11.
 - Input, resize, selection, and deliberate clipboard controls.
 - Safe link/title/parser-hook policy.
 - Font, IME, Unicode-width, and screen-reader baseline.
@@ -738,14 +738,14 @@ trusted UI, or automatic clipboard/URI authority.
 
 ### Checklist
 
-- [ ] Add reviewed xterm.js dependency and required addons.
-- [ ] Implement model/view separation.
-- [ ] Connect bounded stream and credit flow.
-- [ ] Implement input and resize.
-- [ ] Implement safe selection and clipboard.
-- [ ] Implement URI and title policy.
-- [ ] Add Unicode, IME, and accessibility coverage.
-- [ ] Pass latency and sustained-output budgets.
+- [x] Add reviewed xterm.js dependency and required addons.
+- [x] Implement model/view separation.
+- [x] Connect bounded stream and credit flow.
+- [x] Implement input and resize.
+- [x] Implement safe selection and clipboard.
+- [x] Implement URI and title policy.
+- [x] Add Unicode, IME, and accessibility coverage.
+- [x] Pass latency and sustained-output budgets.
 
 ---
 
@@ -753,8 +753,8 @@ trusted UI, or automatic clipboard/URI authority.
 
 ### Status
 
-- [x] Not Started
-- [ ] In Progress
+- [ ] Not Started
+- [x] In Progress
 - [ ] Blocked
 - [ ] Complete
 

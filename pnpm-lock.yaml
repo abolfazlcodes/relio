@@ -6,6 +6,9 @@ settings:
 
 catalogs:
   default:
+    '@tauri-apps/api':
+      specifier: 2.11.1
+      version: 2.11.1
     '@tauri-apps/cli':
       specifier: 2.11.4
       version: 2.11.4
@@ -27,6 +30,12 @@ catalogs:
     '@vitejs/plugin-react':
       specifier: 5.0.2
       version: 5.0.2
+    '@xterm/addon-fit':
+      specifier: 0.11.0
+      version: 0.11.0
+    '@xterm/xterm':
+      specifier: 6.0.0
+      version: 6.0.0
     jsdom:
       specifier: 26.1.0
       version: 26.1.0
@@ -56,6 +65,15 @@ importers:
 
   apps/desktop:
     dependencies:
+      '@tauri-apps/api':
+        specifier: 'catalog:'
+        version: 2.11.1
+      '@xterm/addon-fit':
+        specifier: 'catalog:'
+        version: 0.11.0
+      '@xterm/xterm':
+        specifier: 'catalog:'
+        version: 6.0.0
       react:
         specifier: 'catalog:'
         version: 19.1.1
@@ -530,6 +548,9 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@tauri-apps/api@2.11.1':
+    resolution: {integrity: sha512-M2FPuYND2m+wh5hfW9ZpSdxMPdEJovPBWwoHJmwUpysTYNHaOkVFN419m/K0LIgjb/7KU2vBgsUepJWugQCvAA==}
+
   '@tauri-apps/cli-darwin-arm64@2.11.4':
     resolution: {integrity: sha512-1ryOF3ZhpZ/nemHV5zVwBQBz9jDGKmKPvWPADOhc83ig0P4bMc2iER4NbC6r9sjeIZ6RVQ4g3RZIYvezhcl4TQ==}
     engines: {node: '>= 10'}
@@ -701,6 +722,12 @@ packages:
 
   '@vitest/utils@3.2.4':
     resolution: {integrity: sha512-fB2V0JFrQSMsCo9HiSq3Ezpdv4iYaXRG1Sx8edX3MwxfyNn83mKiGzOcH+Fkxt4MHxr3y42fQi1oeAInqgX2QA==}
+
+  '@xterm/addon-fit@0.11.0':
+    resolution: {integrity: sha512-jYcgT6xtVYhnhgxh3QgYDnnNMYTcf8ElbxxFzX0IZo+vabQqSPAjC3c1wJrKB5E19VwQei89QCiZZP86DCPF7g==}
+
+  '@xterm/xterm@6.0.0':
+    resolution: {integrity: sha512-TQwDdQGtwwDt+2cgKDLn0IRaSxYu1tSUjgKarSDkUM0ZNiSRXFpjxEsvc/Zgc5kq5omJ+V0a8/kIM2WD3sMOYg==}
 
   agent-base@7.1.4:
     resolution: {integrity: sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==}
@@ -1506,6 +1533,8 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.62.3':
     optional: true
 
+  '@tauri-apps/api@2.11.1': {}
+
   '@tauri-apps/cli-darwin-arm64@2.11.4':
     optional: true
 
@@ -1684,6 +1713,10 @@ snapshots:
       '@vitest/pretty-format': 3.2.4
       loupe: 3.2.1
       tinyrainbow: 2.0.0
+
+  '@xterm/addon-fit@0.11.0': {}
+
+  '@xterm/xterm@6.0.0': {}
 
   agent-base@7.1.4: {}
 

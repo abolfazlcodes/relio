@@ -31,12 +31,12 @@ describe("workbench navigation", () => {
     expect(within(primary).getByRole("button", { name: "Hosts" })).toHaveFocus();
   });
 
-  it("changes contextual sections without claiming future capability", () => {
+  it("changes contextual sections without claiming future capability", async () => {
     render(<Workbench />);
     fireEvent.click(screen.getByRole("button", { name: "Sessions" }));
     expect(screen.getByRole("heading", { name: "Sessions" })).toHaveFocus();
-    expect(screen.getByText("Preview only")).toBeInTheDocument();
-    expect(screen.getByText(/Local compositions of sessions/u)).toBeInTheDocument();
+    expect(screen.getByText("Local runtime")).toBeInTheDocument();
+    expect(await screen.findByText(/only in the Relio desktop runtime/u)).toBeInTheDocument();
   });
 
   it("opens the command palette from the registered global shortcut", () => {

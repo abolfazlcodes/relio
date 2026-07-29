@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-terminal-list-shell-profiles"
+description = "Enables the terminal_list_shell_profiles command without any pre-configured scope."
+commands.allow = ["terminal_list_shell_profiles"]
+
+[[permission]]
+identifier = "deny-terminal-list-shell-profiles"
+description = "Denies the terminal_list_shell_profiles command without any pre-configured scope."
+commands.deny = ["terminal_list_shell_profiles"]

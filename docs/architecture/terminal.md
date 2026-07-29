@@ -102,6 +102,16 @@ Shell discovery uses the current absolute executable shell and known platform lo
 
 Named v1 limits are enforced in `pty.rs`; changing them requires capacity, latency, shutdown, and security evidence. Native conformance covers start, output, ordered input, resize, normal exit, pressure, forced process-group cleanup, and sibling survival on every Tier 1 target.
 
+## Renderer and webview contract
+
+Milestone 10 uses `/xterm 6.0.0` with only `/addon-fit 0.11.0`; ADR-011 owns the dependency review. `TerminalModel` owns emulation, the 10,000-line scrollback, parser policy, input sequence, output cursor, and xterm write acknowledgements. React owns only inert facts such as lifecycle state, sanitized title, and trusted-dialog visibility. Terminal bytes never enter React state. Detaching a pane moves the same xterm element into a document fragment, so model and bounded scrollback survive remount without serialization. Backend replay after loss of the entire webview is owned by Milestone 11.
+
+The renderer grants 1 MiB initial output credit, never exceeding the backend-advertised 4 MiB maximum, and replenishes exactly the bytes acknowledged by the xterm write callback. Output chunks carry decimal-string sequence numbers. A mismatch or provider `output_gap` event produces trusted chrome outside the terminal; it is never hidden in terminal output. Input and binary events become bounded byte arrays with decimal-string monotonic frame numbers. `ResizeObserver` events coalesce to one animation frame before fit and IPC.
+
+Remote window manipulation is disabled. OSC 52 is consumed without clipboard access. Titles are control-free, whitespace-normalized, capped at 160 characters, and used only as inert pane text. Links accept only normalized HTTP(S) destinations without embedded credentials; Relio shows the full destination outside terminal-controlled chrome and offers copy only, never automatic navigation. Copy requires an explicit control and non-empty selection. Paste requires an explicit gesture; multiline, CR, or control-bearing text receives an escaped exact-byte review before send. Clipboard failures become safe state errors and never expose clipboard content.
+
+The terminal input textarea receives a semantic label. The baseline uses xterm IME handling, a bundled system-monospace stack, minimum 4.5:1 contrast, DOM rendering, and optional screen-reader mode under forced colors. Unicode, IME, screen-reader, font, and Tier 1 interactive-program conformance remain release gates in Milestones 34 and 35; this milestone establishes the implementation seam and hostile-policy coverage.
+
 ## Shell integration
 
 Shell integration is an optional enhancement using a small, reviewable script or supported escape-sequence protocol. It should never be required for basic terminal operation and must have a clear install/remove path.

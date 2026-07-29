@@ -1,1 +1,1 @@
-{"$schema":"../gen/schemas/desktop-schema.json","identifier":"main","description":"Primary bundled Relio workbench with no privileged commands.","windows":["main"],"permissions":[]}
+{"$schema":"../gen/schemas/desktop-schema.json","identifier":"main","description":"Primary bundled Relio workbench with only the bounded local-terminal command set.","windows":["main"],"permissions":["allow-terminal-list-shell-profiles","allow-terminal-start-local","allow-terminal-grant-output-credit","allow-terminal-send-input","allow-terminal-resize","allow-terminal-stop"]}

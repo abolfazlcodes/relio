@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-terminal-grant-output-credit"
+description = "Enables the terminal_grant_output_credit command without any pre-configured scope."
+commands.allow = ["terminal_grant_output_credit"]
+
+[[permission]]
+identifier = "deny-terminal-grant-output-credit"
+description = "Denies the terminal_grant_output_credit command without any pre-configured scope."
+commands.deny = ["terminal_grant_output_credit"]

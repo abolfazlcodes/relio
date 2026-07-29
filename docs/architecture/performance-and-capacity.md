@@ -86,9 +86,7 @@ Benchmark:
 - output while resizing, switching panes, and recording.
 
 The test asserts byte order, no silent loss, bounded pending queues, input
-responsiveness, and memory stabilization after the stream ends. A throughput
-number is recorded per platform after the first implementation; the blueprint
-does not invent one before xterm/webview measurements exist.
+responsiveness, and memory stabilization after the stream ends. The model adapter gate processes 32 MiB as 4,096 ordered 8 KiB chunks in less than 2 seconds in the deterministic CI fixture, replenishing credit only after each write acknowledgement. This is a regression guard for application overhead, not a webview rendering claim. Release builds on physical Tier 1 reference profiles must record xterm paint throughput, p95 keystroke-to-paint (budget 50 ms), resident-memory stabilization, and first-prompt latency before Milestone 36 closes.
 
 Backpressure is an end-to-end contract. It may slow the child or remote channel.
 It may not allocate without bound. If a provider cannot pause and data must be

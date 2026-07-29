@@ -300,3 +300,30 @@ Completed the renderer-neutral local terminal runtime with native POSIX PTY and 
 ### Security Notes
 
 The webview receives no process handle or shell primitive. Terminal output stays untrusted bytes, environment inheritance excludes common secret-bearing variables, queue growth is bounded, and termination targets only the PTY process group or Job Object created for the session. A POSIX descendant that deliberately creates a new session is documented as residual platform risk and remains part of release conformance.
+
+
+## 2026-07-29 — Milestone 10: Terminal Rendering
+
+### Outcome
+
+Completed the first usable local terminal surface with a renderer-neutral, bounded Tauri channel contract and an xterm.js model that survives DOM detachment without routing terminal bytes through React state.
+
+### Decisions
+
+- ADR-011 pins xterm.js 6.0.0 and the fit addon 0.11.0. Clipboard, web-link, image, serialization, WebGL, and experimental Unicode addons remain excluded.
+- Rust owns the PTY and grants the main webview exactly six typed local-terminal commands. One active session is an explicit temporary M10 limit replaced by the M11 registry.
+- A 1 MiB initial credit window is replenished only after xterm write acknowledgement; sequence counters cross IPC as decimal strings and gaps render in trusted chrome.
+- OSC 52, remote window operations, automatic URI opening, and credential-bearing or non-HTTP links are blocked. Multiline or control-bearing paste requires exact-text review.
+- The terminal feature is lazy-loaded, reducing the empty-workbench production JavaScript chunk from 547 kB to 205 kB.
+
+### Verification
+
+- Generated IPC contract freshness, documentation checks, Rust formatting, Clippy, strict TypeScript, and production frontend build: **Passed**.
+- Complete frontend suite: **47 passed**, including hostile title, URI, clipboard, credit, gap, and a 32 MiB sustained adapter gate (under 2 seconds).
+- Rust unit, hostile-contract, IPC, property, lifecycle, and native Linux PTY tests: **62 passed**.
+- Windows desktop-runtime feature compilation: **Deferred to native packaging CI** because the repository intentionally has no Windows icon before Milestone 37; the build script stops at that packaging prerequisite. Linux native Tauri compile remains unavailable because this host lacks GTK/WebKit development packages.
+- Tier 1 xterm paint, IME, Unicode-font, screen-reader, and physical latency/memory measurements remain release gates in Milestones 34–36.
+
+### Security Notes
+
+Terminal output remains opaque hostile bytes. The renderer has no generic process, filesystem, network, opener, or Tauri clipboard authority; remote text can modify only the bounded terminal model or inert, sanitized presentation facts.
